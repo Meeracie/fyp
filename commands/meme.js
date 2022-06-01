@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { request }= require('undici');
 const {	MessageEmbed } = require('discord.js');
 const axios = require('axios');
 
@@ -10,9 +9,9 @@ module.exports = {
     async execute(interaction) {
         const url = 'https://some-random-api.ml/meme';
 
-        
+        let response;
         try {
-            let response = await axios.get(url);
+            response = await axios.get(url);
             console.log(response.data);
         } catch(e) {
             console.log(e);
