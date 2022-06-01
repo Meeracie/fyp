@@ -16,7 +16,7 @@ async function getJSONResponse(body) {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('urban')
-        .setDescription('Send random cat')
+        .setDescription('An urban dictionary')
         .addStringOption(option => option.setName('term').setDescription('Define')),
     async execute(interaction) {
         const term = interaction.options.getString('term');
