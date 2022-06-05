@@ -3,7 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { request }= require('undici');
+const { MONGO_URI } = require('./config.json');
+// const { request }= require('undici');
+const mongoose = require('mongoose');
 
 
 // Create a new client instance
@@ -37,8 +39,23 @@ for (const file of eventFiles) {
 }
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
+client.once('ready', async () => {
+	// await mongoose.connect(
+	// 	MONGO_URI || '',
+	// 	{
+	// 		keepAlive: true,
+	// 	}
+	// 	);
 	console.log('Ready!');
+	await mongoose.connect(MONGO_URI, {
+		
+	})
+	.then(() => {
+		console.log("Connected to database!");
+	})
+	.catch((err) => {
+		console.error(err);
+	})
 });
 
 
