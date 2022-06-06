@@ -89,30 +89,41 @@ client.on("interactionCreate", async (interaction) => {
     }
 });
 
-// Add user to db every time they send message (need to add condition to prevent dupes)
+// Add user to db every time they send message
 client.on("messageCreate", async (message) => {
     if (message.content.toLowerCase() === "!register") {
         console.log("Creating new user ...");
         console.log(`message.author.bot=${message.author.bot}`);
         if (message.author.bot) return;
-        // add condition to prevent dupes
-        //console.log();
-        const newUser = await User.create({
-            username: message.author.username,
-            discordId: message.author.id,
-        });
-        //const savedUser = await newUser.save();
-        console.log("Created new user!");
+        // condition to prevent dupes
+        const checkUsers = await User.find({}).select("-_id username");
+        let userExists = false;
+        console.log(`message.author.username=${message.author.username}`);
+        for (const i in checkUsers) {
+            if (message.author.username === checkUsers[i].username) {
+                userExists = true;
+            }
+        }
+        if (!userExists) {
+            const newUser = await User.create({
+                username: message.author.username,
+                discordId: message.author.id,
+            });
+            //const savedUser = await newUser.save();
+            console.log("Created new user!");
+        } else {
+            console.log("User already exists!");
+        }
     }
     if (message.content.toLowerCase() === "!users") {
         // const totalUsers = await User.find({}, {
         //     "_id": 0,
         //     "username": 1
         // });
-        const totalUsers = await User.find({}).select('-_id username');
+        const totalUsers = await User.find({}).select("-_id username");
         console.log(`Users: ${totalUsers}`);
         let resultUsers = "";
-        for( const i in totalUsers) {
+        for (const i in totalUsers) {
             resultUsers += `${totalUsers[i].username} `;
         }
         // for (let i = 0; i < totalUsers.length; i++) {
