@@ -1,13 +1,13 @@
 // Require the necessary discord.js classes
-const fs = require('node:fs');
-const path = require('node:path');
-const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
-const { MONGO_URI } = require('./config.json');
+const fs = require("node:fs");
+const path = require("node:path");
+const { Client, Collection, Intents } = require("discord.js");
+const { token } = require("./config.json");
+const { MONGO_URI } = require("./config.json");
 // const { request }= require('undici');
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 // const testSchema = require('./test-schema');
-const User = require('./database/schema/user');
+const User = require("./database/schema/user");
 
 // Create a new client instance
 const client = new Client({
@@ -17,16 +17,16 @@ const client = new Client({
 
 // To access commands in other files
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'commands');
+const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith('.js'));
+    .filter((file) => file.endsWith(".js"));
 
 // To access events in other files
-const eventsPath = path.join(__dirname, 'events');
+const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs
     .readdirSync(eventsPath)
-    .filter((file) => file.endsWith('.js'));
+    .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
@@ -47,18 +47,18 @@ for (const file of eventFiles) {
 }
 
 // When the client is ready, run this code (only once)
-client.once('ready', async () => {
+client.once("ready", async () => {
     // await mongoose.connect(
     // 	MONGO_URI || '',
     // 	{
     // 		keepAlive: true,
     // 	}
     // 	);
-    console.log('Ready!');
+    console.log("Ready!");
     await mongoose
         .connect(MONGO_URI, {})
         .then(() => {
-            console.log('Connected to database!');
+            console.log("Connected to database!");
         })
         .catch((err) => {
             console.error(err);
@@ -71,7 +71,7 @@ client.once('ready', async () => {
     // }, 1000)
 });
 
-client.on('interactionCreate', async (interaction) => {
+client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
@@ -83,32 +83,53 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
         console.error(error);
         await interaction.reply({
-            content: 'There was an error while executing this command!',
+            content: "There was an error while executing this command!",
             ephemeral: true,
         });
     }
 });
 
-// Add user to db every time they send message
-client.on('messageCreate', async (message) => {
-    if (message.content == '!register') {
-        console.log('Creating new user ...');
+// Add user to db every time they send message (need to add condition to prevent dupes)
+client.on("messageCreate", async (message) => {
+    if (message.content.toLowerCase() === "!register") {
+        console.log("Creating new user ...");
+        console.log(`message.author.bot=${message.author.bot}`);
+        if (message.author.bot) return;
+        // add condition to prevent dupes
+        //console.log();
         const newUser = await User.create({
             username: message.author.username,
             discordId: message.author.id,
         });
         //const savedUser = await newUser.save();
-        console.log('Created new user!');
+        console.log("Created new user!");
+    }
+    if (message.content.toLowerCase() === "!users") {
+        // const totalUsers = await User.find({}, {
+        //     "_id": 0,
+        //     "username": 1
+        // });
+        const totalUsers = await User.find({}).select('-_id username');
+        console.log(`Users: ${totalUsers}`);
+        let resultUsers = "";
+        for( const i in totalUsers) {
+            resultUsers += `${totalUsers[i].username} `;
+        }
+        // for (let i = 0; i < totalUsers.length; i++) {
+        //     message.channel.send(totalUsers[i].username);
+        // }
+        // message.channel.send(totalUsers.toString());
+        message.channel.send(resultUsers);
     }
 });
 
 // Add user to db when they join the server
-client.on('guildMemberAdd', async (member) => {
+client.on("guildMemberAdd", async (member) => {
     const newMember = await User.create({
         username: message.author.username,
         discordId: message.author.id,
     });
-    console.log('Guild member added');
+    console.log("Guild member added");
 });
 
 // client.on('message', async (message) => {
@@ -119,5 +140,6 @@ client.on('guildMemberAdd', async (member) => {
 //     const savedUser = await newUser.save();
 //     console.log('Create new user!');
 // });
+
 // Login to Discord with your client's token
 client.login(token);
