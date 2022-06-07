@@ -11,7 +11,7 @@ const User = require("./database/schema/user");
 
 // Create a new client instance
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS],
 });
 // client.Database = require('./database/mongoose');
 
@@ -136,9 +136,12 @@ client.on("interactionCreate", async (interaction) => {
 
 // Add user to db when they join the server
 client.on("guildMemberAdd", async (member) => {
+    // console.log('Member displayName', member.displayName);
+    // console.log('Member id', member.id);
     const newMember = await User.create({
-        username: message.author.username,
-        discordId: message.author.id,
+        username: member.displayName,
+        discordId: member.id,
+        reminder: "",
     });
     console.log("Guild member added");
 });

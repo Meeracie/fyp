@@ -66,9 +66,54 @@ module.exports = {
                 console.log(`Arguments: ${argStart} ${argEnd} ${argInterval}`);
 
                 // Update user's reminder db
+                const updateUser = await User.findOne({
+                    discordId: currentUser,
+                }).updateOne({
+                    reminder: `${argStart} ${argEnd} ${argInterval}`,
+                });
+                // console.log(updateUser);
 
                 // Parsing string to int
-                
+                const start = parseInt(argStart);
+                const end = parseInt(argEnd);
+                const interval = parseInt(argInterval);
+
+                // Execute the reminder [Timer logic]
+                // const userFetch = await interaction.client.users
+                //     .fetch(currentUser)
+                //     .then((user) => {
+                //         user.send("Take a break!").catch((error) => {
+                //             // console.log('ERROR')
+                //             result.replace(
+                //                 "Your DMs is closed! Please allow direct messages from server members from server's Privacy Settings!"
+                //             );
+                //         });
+                //     });
+                let checkOk = true;
+
+                const userFetch = await interaction.client.users.fetch(
+                    currentUser
+                );
+                userFetch.send("Take a break!").catch((error) => {
+                    // console.log('ERROR')
+                    result = "Your DMs is closed! Please allow direct messages from server members from server's Privacy Settings!"
+                    checkOk = false;
+                });
+
+                // const userFetch = interaction.client.user.fetch(currentUser)
+                //     .then((user) => {
+
+                //         user.send("Take a break!")
+                        
+                //     }
+                //     )
+                //     .catch((error) => {
+                //         console.error(error);
+                //         current.result = "Your DMs are closed!";
+                //     });
+
+                console.log(`checkOk: ${checkOk}`);
+                console.log(`RESULT: ${result}`);
             }
         } catch (err) {
             console.error(err);
