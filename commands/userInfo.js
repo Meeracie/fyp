@@ -4,7 +4,7 @@ const moment = require('moment');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('profile2')
+		.setName('myprofile')
 		.setDescription('Replies with Profile2'),
 	async execute(interaction) {
 		// await interaction.reply(`Hello, ${interaction.user.tag}`)
