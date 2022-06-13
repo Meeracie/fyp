@@ -56,8 +56,9 @@ module.exports = {
             if (!isExist) {
                 result +=
                     "User does not exist in database! Please run /register";
+                // interaction.channel.send("User does not exist in database! Please run /register");
             } else {
-                result += "Run reminder";
+                // result += "Run reminder";
 
                 // Get the user arguments
                 const argStart = interaction.options.get("start").value;
@@ -77,8 +78,10 @@ module.exports = {
                 const start = parseInt(argStart);
                 const end = parseInt(argEnd);
                 const interval = parseInt(argInterval);
+                result = `Remind me ${argEnd}`
 
-                // Execute the reminder [Timer logic]
+                // Execute the reminder [Timer logic] (TO DO)
+
                 // const userFetch = await interaction.client.users
                 //     .fetch(currentUser)
                 //     .then((user) => {
@@ -95,9 +98,8 @@ module.exports = {
                     currentUser
                 );
                 userFetch.send("Take a break!").catch((error) => {
-                    // console.log('ERROR')
-                    result = "Your DMs is closed! Please allow direct messages from server members from server's Privacy Settings!"
-                    checkOk = false;
+                    interaction.channel.send("Your DMs is closed! Please allow direct messages from server's Privacy Settings!");
+                    result = "Your DMs is closed! Please allow direct messages from server members from server's Privacy Settings!";
                 });
 
                 // const userFetch = interaction.client.user.fetch(currentUser)
@@ -111,13 +113,15 @@ module.exports = {
                 //         console.error(error);
                 //         current.result = "Your DMs are closed!";
                 //     });
-
+                
                 console.log(`checkOk: ${checkOk}`);
                 console.log(`RESULT: ${result}`);
+                
             }
         } catch (err) {
             console.error(err);
         }
-        await interaction.reply(result);
+        await interaction.channel.send(result);
+        // await interaction.reply({content: result, ephemeral: true});
     },
 };
