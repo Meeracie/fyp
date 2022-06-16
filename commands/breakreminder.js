@@ -121,22 +121,36 @@ module.exports = {
 
                 // check timer validation
                 if (end > 0 && interval > 0) {
+                    let errorCheck = false;
                     // timer function here
                     let timerInterval = setInterval(() => {
-                        userFetch.send('Take a break!').catch((error) => {
-                        });
-                        console.log(
-                            'Sent message to ',
-                            interaction.user.username
-                        );
+                        if (!errorCheck) {
+                            userFetch.send('Take a break!').catch((error) => {
+                                console.log('error here');
+                                errorCheck = true;
+                            });
+                            console.log(
+                                'Sent message to ',
+                                interaction.user.username
+                            );
+                        }
                     }, interval * 1000);
+
+                    console.log(errorCheck);
+
                     setTimeout(() => {
                         // setInterval(() => {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
-                        clearInterval(timerInterval);
-                        console.log('Stop timer reminder!');
+                        console.log('error check in set time out', errorCheck);
+                        if (!errorCheck) {
+                            clearTimeout();
+                            clearInterval(timerInterval);
+                            
+                            console.log('Stop timer reminder!');
+                        }
                     }, end * 1000);
+                    console.log('im here');
                 } else {
                     await interaction.reply({
                         content: 'Value cannot be less than 0!',
