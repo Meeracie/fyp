@@ -1,38 +1,38 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
-const User = require('../database/schema/user');
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const { MessageEmbed } = require("discord.js");
+const User = require("../database/schema/user");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('breakreminder')
+        .setName("breakreminder")
         .setDescription(
-            'A break reminder command that will send you a reminder message to take a break'
+            "A break reminder command that will send you a reminder message to take a break"
         )
         .addIntegerOption((option) => {
             return option
-                .setName('start')
+                .setName("start")
                 .setRequired(true)
-                .setDescription('When the timer should start [IN SECONDS]');
+                .setDescription("When the timer should start [IN SECONDS]");
         })
         .addIntegerOption((option) => {
             return option
-                .setName('end')
+                .setName("end")
                 .setRequired(true)
-                .setDescription('When the timer should end [IN SECONDS]');
+                .setDescription("When the timer should end [IN SECONDS]");
         })
         .addIntegerOption((option) => {
             return option
-                .setName('interval')
+                .setName("interval")
                 .setRequired(true)
                 .setDescription(
-                    'Interval how many time should the bot remind you to take a break [IN SECONDS]'
+                    "Interval how many time should the bot remind you to take a break [IN SECONDS]"
                 );
         }),
     async execute(interaction) {
-        let result = '';
+        let result = "";
         try {
-            console.log('Checking user in database...');
-            const checkUsers = await User.find({}).select('-_id');
+            console.log("Checking user in database...");
+            const checkUsers = await User.find({}).select("-_id");
             // console.log(checkUsers);
             let isExist = false;
             let currentUser = interaction.user.id;
@@ -43,7 +43,7 @@ module.exports = {
             for (const i in checkUsers) {
                 if (currentUser === checkUsers[i].discordId) {
                     isExist = true;
-                    console.log('User is exist in database!');
+                    console.log("User is exist in database!");
                     console.log(`user reminder: ${checkUsers[i].reminder}`);
                 }
             }
@@ -55,15 +55,15 @@ module.exports = {
             // }
             if (!isExist) {
                 result +=
-                    'User does not exist in database! Please run /register';
+                    "User does not exist in database! Please run /register";
                 // interaction.channel.send("User does not exist in database! Please run /register");
             } else {
                 // result += "Run reminder";
 
                 // Get the user arguments
-                const argStart = interaction.options.get('start').value;
-                const argEnd = interaction.options.get('end').value;
-                const argInterval = interaction.options.get('interval').value;
+                const argStart = interaction.options.get("start").value;
+                const argEnd = interaction.options.get("end").value;
+                const argInterval = interaction.options.get("interval").value;
                 console.log(`Arguments: ${argStart} ${argEnd} ${argInterval}`);
 
                 // Update user's reminder db
@@ -125,12 +125,26 @@ module.exports = {
                     // timer function here
                     let timerInterval = setInterval(() => {
                         if (!errorCheck) {
-                            userFetch.send('Take a break!').catch((error) => {
-                                console.log('error here');
-                                errorCheck = true;
-                            });
+                            userFetch
+                                .send({
+                                    content: "Take a break",
+                                    embeds: [
+                                        {
+                                            color: "#ffda36",
+                                            title: "",
+                                            description: "",
+                                            thumbnail: {
+                                                url: "https://i.imgur.com/8T0qALC.jpg",
+                                            },
+                                        },
+                                    ],
+                                })
+                                .catch((error) => {
+                                    console.log("error here");
+                                    errorCheck = true;
+                                });
                             console.log(
-                                'Sent message to ',
+                                "Sent message to ",
                                 interaction.user.username
                             );
                         }
@@ -142,30 +156,48 @@ module.exports = {
                         // setInterval(() => {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
-                        console.log('error check in set time out', errorCheck);
+                        console.log("error check in set time out", errorCheck);
                         if (!errorCheck) {
                             clearTimeout();
                             clearInterval(timerInterval);
-                            
-                            console.log('Stop timer reminder!');
+
+                            console.log("Stop timer reminder!");
                         }
                     }, end * 1000);
-                    console.log('im here');
+                    console.log("im here");
                 } else {
                     await interaction.reply({
-                        content: 'Value cannot be less than 0!',
+                        content: "Value cannot be less than 0!",
                         ephemeral: true,
                     });
                     return;
                 }
+
+                const exampleEmbed = new MessageEmbed()
+                    .setColor("#7972fc")
+                    .setTitle("Break Reminder")
+                    .setDescription("Your reminder has been set!")
+                    .addField(
+                        "Reminder",
+                        `Start time: ${argStart} \n End time: ${argEnd} \n Time interval: ${argInterval}`
+                    )
+                    .setThumbnail("https://i.imgur.com/uZvm9tC.gif");
+                //.setImage('https://imgur.com/uZvm9tC');
+
+                await interaction.reply({
+                    embeds: [exampleEmbed],
+                });
             }
         } catch (err) {
             console.error(err);
         }
         // await interaction.channel.send(result);
-        await interaction.reply({
-            content: 'Reminder start!',
-            ephemeral: true,
-        });
+        // const file = new MessageAttachment('../assets/alarm.gif');
+
+        //await interaction.channel.send({ embeds: [exampleEmbed] });
+
+        //await interaction.reply({
+        //    embeds: [exampleEmbed]
+        //});
     },
 };

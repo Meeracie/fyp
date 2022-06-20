@@ -4,8 +4,8 @@ const moment = require('moment');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('profile2')
-		.setDescription('Replies with Profile2'),
+		.setName('myprofile')
+		.setDescription('Replies with your profile'),
 	async execute(interaction) {
 		// await interaction.reply(`Hello, ${interaction.user.tag}`)
 		const member = interaction.options.getMember('target');
@@ -14,12 +14,12 @@ module.exports = {
 		const Response = new MessageEmbed()
 		.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
 		.setThumbnail(interaction.user.displayAvatarURL({dynamic: true}))
-		.setColor('NOT_QUITE_BLACK')
+		.setColor("#5298e3")
 		.addField("UserID", interaction.user.id, false)
 		.addField("Roles", `${interaction.member.roles.cache.map(r => r).join(" ").replace("@everyone", "" || "None")}`)
-		// .addField("Discord User Since", `${moment(interaction.user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`)
-		// .addField("Server Member Since", `${moment(interaction.member.joinedAt).format('MMMM Do YYYY, h:mm:ss a')}`)
-		await interaction.reply({embeds: [Response], ephemeral: true});
+		.addField("Discord User Since", `${moment(interaction.user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`)
+		.addField("Server Member Since", `${moment(interaction.member.joinedAt).format('MMMM Do YYYY, h:mm:ss a')}`)
+		await interaction.reply({embeds: [Response]});
 		
 	},
 };
