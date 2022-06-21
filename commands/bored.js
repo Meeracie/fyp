@@ -17,6 +17,10 @@ module.exports = {
         } catch (err) {
             console.error(err);
         }
-        await interaction.reply(response.data.activity);
+
+        const embed = new MessageEmbed()
+        .setDescription(response.data.activity)
+
+        await interaction.reply({embeds: [embed]});
     }
 }

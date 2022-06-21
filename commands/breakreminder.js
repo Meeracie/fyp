@@ -127,12 +127,11 @@ module.exports = {
                         if (!errorCheck) {
                             userFetch
                                 .send({
-                                    content: "Take a break",
                                     embeds: [
                                         {
                                             color: "#ffda36",
-                                            title: "",
-                                            description: "",
+                                            title: "Break Time!! \nLOOK AWAY FROM THE SCREEN AND STAND UP",
+                                            description: "If you can't get up for full breaks, 5 minute breaks will do. \nLooking at the screen for long periods of time are extremely harmful. Give your eyes a chance to relax!",
                                             thumbnail: {
                                                 url: "https://i.imgur.com/8T0qALC.jpg",
                                             },
