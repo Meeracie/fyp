@@ -54,11 +54,9 @@ module.exports = {
             //     }
             // }
             if (!isExist) {
-                result +=
-                    "User does not exist in database! Please run /register";
-                // interaction.channel.send("User does not exist in database! Please run /register");
+                await interaction.reply("Error no user found in database! Please run command /register");
+                return;
             } else {
-                // result += "Run reminder";
 
                 // Get the user arguments
                 const argStart = interaction.options.get("start").value;
@@ -195,8 +193,6 @@ module.exports = {
 
         //await interaction.channel.send({ embeds: [exampleEmbed] });
 
-        //await interaction.reply({
-        //    embeds: [exampleEmbed]
-        //});
+        //await interaction.reply("Error no user found in database! Please run command /register")
     },
 };
