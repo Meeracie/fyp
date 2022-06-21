@@ -10,15 +10,9 @@ module.exports = {
         )
         .addIntegerOption((option) => {
             return option
-                .setName("start")
+                .setName("duration")
                 .setRequired(true)
-                .setDescription("When the timer should start [IN SECONDS]");
-        })
-        .addIntegerOption((option) => {
-            return option
-                .setName("end")
-                .setRequired(true)
-                .setDescription("When the timer should end [IN SECONDS]");
+                .setDescription("When the timer should duration [IN SECONDS]");
         })
         .addIntegerOption((option) => {
             return option
@@ -59,24 +53,22 @@ module.exports = {
             } else {
 
                 // Get the user arguments
-                const argStart = interaction.options.get("start").value;
-                const argEnd = interaction.options.get("end").value;
+                const argDuration = interaction.options.get("duration").value;
                 const argInterval = interaction.options.get("interval").value;
-                console.log(`Arguments: ${argStart} ${argEnd} ${argInterval}`);
+                console.log(`Arguments: ${argDuration} ${argInterval}`);
 
                 // Update user's reminder db
                 const updateUser = await User.findOne({
                     discordId: currentUser,
                 }).updateOne({
-                    reminder: `${argStart} ${argEnd} ${argInterval}`,
+                    reminder: `${argDuration} ${argInterval}`,
                 });
                 // console.log(updateUser);
 
                 // Parsing string to int (in seconds)
-                const start = parseInt(argStart);
-                const end = parseInt(argEnd);
+                const duration = parseInt(argDuration);
                 const interval = parseInt(argInterval);
-                result = `Remind me ${argEnd}`;
+                result = `Remind me ${argDuration}`;
 
                 // Execute the reminder [Timer logic] (TO DO)
 
@@ -118,7 +110,7 @@ module.exports = {
                 );
 
                 // check timer validation
-                if (end > 0 && interval > 0) {
+                if (duration > 0 && interval > 0) {
                     let errorCheck = false;
                     // timer function here
                     let timerInterval = setInterval(() => {
@@ -129,7 +121,7 @@ module.exports = {
                                         {
                                             color: "#ffda36",
                                             title: "Break Time!! \nLOOK AWAY FROM THE SCREEN AND STAND UP",
-                                            description: "If you can't get up for full breaks, 5 minute breaks will do. \nLooking at the screen for long periods of time are extremely harmful. Give your eyes a chance to relax!",
+                                            description: "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
                                             thumbnail: {
                                                 url: "https://i.imgur.com/8T0qALC.jpg",
                                             },
@@ -160,7 +152,7 @@ module.exports = {
 
                             console.log("Stop timer reminder!");
                         }
-                    }, end * 1000);
+                    }, duration * 1000);
                     console.log("im here");
                 } else {
                     await interaction.reply({
@@ -176,7 +168,7 @@ module.exports = {
                     .setDescription("Your reminder has been set!")
                     .addField(
                         "Reminder",
-                        `Start time: ${argStart} \n End time: ${argEnd} \n Time interval: ${argInterval}`
+                        `Duration time: ${argDuration} \n Time interval: ${argInterval}`
                     )
                     .setThumbnail("https://i.imgur.com/uZvm9tC.gif");
                 //.setImage('https://imgur.com/uZvm9tC');

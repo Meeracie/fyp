@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const {	MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const facts = require('./facts.json')
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -14,8 +14,8 @@ module.exports = {
         
         var randPhrase=Math.floor(Math.random()*(ans.length)); //here a random to get a random phrase from the json file
 		let result = await ans[randPhrase];
-		const healthFact = await mongoose.find(); 
-		console.log(healthFact);
+		// const healthFact = await mongoose.find(); 
+		// console.log(healthFact);
 		const response = new MessageEmbed()
 			.setColor("#e31e80")
 			.setTitle("Health Fact")
