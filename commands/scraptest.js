@@ -1,7 +1,7 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const puppeteer = require('puppeteer');
-const cheerio = require('cheerio');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const puppeteer = require("puppeteer");
+const cheerio = require("cheerio");
+const { MessageEmbed } = require("discord.js");
 
 // (async () => {
 //     console.log('Im in');
@@ -19,19 +19,19 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('tips')
-        .setDescription('Scrap from website'),
+        .setName("tips")
+        .setDescription("Scrap from website"),
     async execute(interaction) {
-        // let randomFact = null;
+        let randomFact;
         let healthArray = [];
         (async () => {
-            console.log('Im in');
+            // console.log("Im in");
             const browser = await puppeteer.launch();
 
             const page = await browser.newPage();
-            await page.goto('https://www.thegoodbody.com/health-facts/');
+            await page.goto("https://www.thegoodbody.com/health-facts/");
 
-            await page.screenshot({ path: 'image.png' });
+            await page.screenshot({ path: "image.png" });
 
             const pageData = await page.evaluate(() => {
                 return {
@@ -43,15 +43,28 @@ module.exports = {
 
             const $ = cheerio.load(pageData.html);
             //const element = $()
-            $('.round-number').find('h3').each(function(i, el){
-                let row = $(el).text().replace(/(\s+)/g, ' ');
-                    console.log(`${row}`)
-            })     
-            //await interaction.channel.send(randomFact);
-            await browser.close();
-            console.log('Im out');
+            $(".round-number")
+                .find("h3")
+                .each(function (i, el) {
+                    let row = $(el).text().replace(/(\s+)/g, " ");
+                    row = $(el)
+                        .text()
+                        .replace(/[0-9]+. /g, "")
+                        .trim();
+                    console.log(`${row}`);
+                    healthArray.push(row);
+                });
 
+            await browser.close();
+            // console.log("Im out");
+            console.log("healthArray: ", healthArray);
+            console.log("total array: ", healthArray.length);
+            randomFact =
+                healthArray[Math.floor(Math.random() * healthArray.length)];
+            console.log(`Random Health Fact: ${randomFact}`);
+            //interaction.channel.send(randomFact);
+            
         })();
-        await interaction.reply('Scraping ...');
+        await interaction.reply(randomFact);
     },
 };
