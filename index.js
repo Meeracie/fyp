@@ -2,7 +2,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Intents } = require("discord.js");
-const { token } = require("./config.json");
+//const { token } = require("./config.json");
 const { MONGO_URI } = require("./config.json");
 // const { request }= require('undici');
 const mongoose = require("mongoose");
@@ -156,4 +156,4 @@ client.on("guildMemberAdd", async (member) => {
 // });
 
 // Login to Discord with your client's token
-client.login(token);
+client.login(process.env.DJS_TOKEN);
