@@ -24,7 +24,7 @@ module.exports = {
     async execute(interaction) {
         let randomFact;
         let healthArray = [];
-        async () => {
+        (async () => {
             const browser = await puppeteer.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -67,7 +67,7 @@ module.exports = {
                 ].toString();
             console.log(`Random Health Fact: ${randomFact}`);
             interaction.channel.send(randomFact);
-        };
+        })();
 
         await interaction.reply("Scraping...");
     },
