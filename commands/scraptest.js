@@ -69,6 +69,6 @@ module.exports = {
             interaction.channel.send(randomFact);
         })();
 
-        await interaction.reply("Scraping...");
+        await interaction.reply("Health Fact:");
     },
 };
