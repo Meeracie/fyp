@@ -66,8 +66,8 @@ module.exports = {
                 Math.floor(Math.random() * healthArray.length)
             ].toString();
         console.log(`Random Health Fact: ${randomFact}`);
-        //interaction.channel.send(randomFact);
+        interaction.channel.send(randomFact);
 
-        await interaction.reply(randomFact);
+        await interaction.reply("Scraping...");
     },
 };
