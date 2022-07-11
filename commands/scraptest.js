@@ -3,20 +3,6 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const { MessageEmbed } = require("discord.js");
 
-// (async () => {
-//     console.log('Im in');
-//         const browser = await puppeteer.launch();
-
-//         const page = await browser.newPage();
-//         await page.goto('https://www.thegoodbody.com/health-facts/');
-
-//         await page.screenshot({ path: 'image.png' });
-
-//         await browser.close();
-//         console.log('Im out');
-
-// })();
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("tips")
@@ -41,7 +27,7 @@ module.exports = {
                 };
             });
 
-            //console.log(pageData);
+
 
             const $ = cheerio.load(pageData.html);
             //const element = $()
@@ -53,19 +39,18 @@ module.exports = {
                         .text()
                         .replace(/[0-9]+. /g, "")
                         .trim();
-                    console.log(`${row}`);
+
                     healthArray.push(row);
                 });
 
             await browser.close();
-            // console.log("Im out");
-            console.log("healthArray: ", healthArray);
-            console.log("total array: ", healthArray.length);
+
+
             randomFact =
                 healthArray[
                     Math.floor(Math.random() * healthArray.length)
                 ].toString();
-            console.log(`Random Health Fact: ${randomFact}`);
+
             interaction.channel.send(randomFact);
         })();
 
