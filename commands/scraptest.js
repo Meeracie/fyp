@@ -11,7 +11,6 @@ module.exports = {
         let randomFact;
         let healthArray = [];
         (async () => {
-            await interaction.deferReply();
             const browser = await puppeteer.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
