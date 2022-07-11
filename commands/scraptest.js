@@ -11,7 +11,7 @@ module.exports = {
         let randomFact;
         let healthArray = [];
         (async () => {
-            interaction.deferReply();
+            await interaction.deferReply();
             const browser = await puppeteer.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -55,6 +55,6 @@ module.exports = {
             interaction.channel.send(randomFact);
         })();
 
-        await interaction.editReply("Health Fact:");
+        await interaction.reply("Health Fact:");
     },
 };
