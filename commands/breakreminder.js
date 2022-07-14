@@ -55,7 +55,7 @@ module.exports = {
                 // Get the user arguments
                 const argDuration = interaction.options.get("duration").value;
                 const argInterval = interaction.options.get("interval").value;
-                console.log(`Arguments: ${argDuration} ${argInterval}`);
+                // console.log(`Arguments: ${argDuration} ${argInterval}`);
 
                 // Update user's reminder db
                 const updateUser = await User.findOne({
@@ -102,7 +102,7 @@ module.exports = {
                 //         console.error(error);
                 //         current.result = "Your DMs are closed!";
                 //     });
-                console.log(`RESULT: ${result}`);
+                // console.log(`RESULT: ${result}`);
 
                 // LOGIC TIMER (use setTimeout)
                 const userFetch = await interaction.client.users.fetch(
@@ -129,23 +129,23 @@ module.exports = {
                                     ],
                                 })
                                 .catch((error) => {
-                                    console.log("error here");
+                                    // console.log("error here");
                                     errorCheck = true;
                                 });
-                            console.log(
-                                "Sent message to ",
-                                interaction.user.username
-                            );
+                            // console.log(
+                            //     "Sent message to ",
+                            //     interaction.user.username
+                            // );
                         }
                     }, interval * 1000);
 
-                    console.log(errorCheck);
+                    // console.log(errorCheck);
 
                     setTimeout(() => {
                         // setInterval(() => {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
-                        console.log("error check in set time out", errorCheck);
+                        // console.log("error check in set time out", errorCheck);
                         if (!errorCheck) {
                             clearTimeout();
                             clearInterval(timerInterval);
@@ -153,7 +153,7 @@ module.exports = {
                             console.log("Stop timer reminder!");
                         }
                     }, duration * 1000);
-                    console.log("im here");
+                    // console.log("im here");
                 } else {
                     await interaction.reply({
                         content: "Value cannot be less than 0!",
