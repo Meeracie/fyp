@@ -31,6 +31,7 @@ module.exports = {
             // console.log(checkUsers);
             let isExist = false;
             let currentUser = interaction.user.id;
+            let userStop = false;
             // const userId = await User.find({username: 'alyph'}).select("-_id reminder");
             // console.log(`userId: ${userId}`);
             // console.log(`user reminder: ${userId[0].reminder}`);
@@ -40,6 +41,8 @@ module.exports = {
                     isExist = true;
                     console.log("User is exist in database!");
                     console.log(`user reminder: ${checkUsers[i].reminder}`);
+                    userStop = checkUsers[i].stop;
+                    console.log("user stop: ", userStop);
                 }
             }
             // for (const i in userId) {
@@ -116,7 +119,7 @@ module.exports = {
                     let errorCheck = false;
                     // timer function here
                     let timerInterval = setInterval(() => {
-                        if (!errorCheck) {
+                        if (!errorCheck && !userStop) {
                             userFetch
                                 .send({
                                     embeds: [
