@@ -1,13 +1,27 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const User = require("../database/schema/user");
+let timerInterval;
+let timeoutReminder;
 
-function checkStop() {
-    let userdbStop = await User.findOne({
-        discordId: currentUser,
-    }).select("-_id reminderStop");
-    let userDbStopValue = userdbStop.reminderStop;
-    return userDbStopValue;
+async function checkStop(currentUser) {
+    try {
+        let userdbStop = await User.findOne({
+            discordId: currentUser,
+        }).select("-_id reminderStop");
+        console.log("userdbStop: " + userdbStop);
+        console.log("currentUser: " + currentUser);
+        let userDbStopValue = userdbStop.reminderStop;
+        console.log("in checkstop: ", userDbStopValue);
+        if(userDbStopValue === true) {
+            clearInterval(timerInterval);
+            clearTimeout(timeoutReminder);
+        }
+
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
 }
 
 module.exports = {
@@ -132,9 +146,12 @@ module.exports = {
                 if (duration > 0 && interval > 0) {
                     let errorCheck = false;
                     // timer function here
-                    let timerInterval = setInterval(() => {
-                        console.log("im in setInterval")
-                        if (!errorCheck && !checkStop()) {
+                    timerInterval = setInterval(() => {
+                        console.log("im in setInterval");
+                        // let flag = checkStop(currentUser);
+                        // console.log("flag: ", flag);
+                        checkStop(currentUser);
+                        if (!errorCheck) {
                             userFetch
                                 .send({
                                     embeds: [
@@ -164,19 +181,15 @@ module.exports = {
 
                     // console.log(errorCheck);
 
-                    setTimeout(() => {
+                    timeoutReminder = setTimeout(() => {
                         // setInterval(() => {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
                         // console.log("error check in set time out", errorCheck);
-                        if (!errorCheck || userDbStopValue) {
+                        if (!errorCheck) {
                             clearTimeout();
                             clearInterval(timerInterval);
-                            const updateStop = User.findOne({
-                                discordId: currentUser,
-                            }).updateOne({
-                                stop: false,
-                            });
+                            
                             console.log("Stop timer reminder!");
                         }
                     }, duration * 1000);
@@ -189,6 +202,7 @@ module.exports = {
                     return;
                 }
 
+                
                 const exampleEmbed = new MessageEmbed()
                     .setColor("#7972fc")
                     .setTitle("Break Reminder")
