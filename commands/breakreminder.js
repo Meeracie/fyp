@@ -125,6 +125,7 @@ module.exports = {
                     let errorCheck = false;
                     // timer function here
                     let timerInterval = setInterval(() => {
+                        console.log("im in setInterval")
                         if (!errorCheck && !userDbStopValue) {
                             userFetch
                                 .send({
@@ -160,11 +161,11 @@ module.exports = {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
                         // console.log("error check in set time out", errorCheck);
-                        if (userDbStopValue) {
+                        if (!errorCheck || userDbStopValue) {
                             clearTimeout();
                             clearInterval(timerInterval);
                             const updateStop = await User.findOne({
-                                discordId: interaction.user.id,
+                                discordId: currentUser,
                             }).updateOne({
                                 stop: false,
                             });
