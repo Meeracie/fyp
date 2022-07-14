@@ -164,7 +164,7 @@ module.exports = {
                         if (!errorCheck || userDbStopValue) {
                             clearTimeout();
                             clearInterval(timerInterval);
-                            const updateStop = await User.findOne({
+                            const updateStop = User.findOne({
                                 discordId: currentUser,
                             }).updateOne({
                                 stop: false,
