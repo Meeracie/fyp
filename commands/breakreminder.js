@@ -22,9 +22,10 @@ module.exports = {
                     "Interval how many time should the bot remind you to take a break [IN SECONDS]"
                 );
         }),
-    async execute(interaction) {
+    async execute(interaction, message) {
         let result = "";
         try {
+            console.log("MESSAGE.AUTHOR: ", message.author.username);
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
             // console.log(checkUsers);
