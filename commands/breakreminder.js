@@ -115,14 +115,15 @@ module.exports = {
                 );
 
                 let userdbStop = await User.find({discordId: currentUser}).select("-_id reminderStop");
-                console.log("userdbStop: ", userdbStop);
+                let userDbStopValue = userdbStop[i];
+                console.log("userdbStop: ", userDbStopValue);
 
                 // check timer validation
                 if (duration > 0 && interval > 0) {
                     let errorCheck = false;
                     // timer function here
                     let timerInterval = setInterval(() => {
-                        if (!errorCheck && !userStop) {
+                        if (!errorCheck && !userDbStopValue) {
                             userFetch
                                 .send({
                                     embeds: [
@@ -145,6 +146,9 @@ module.exports = {
                             //     "Sent message to ",
                             //     interaction.user.username
                             // );
+                        }
+                        else {
+                            clearInterval(timerInterval);
                         }
                     }, interval * 1000);
 
