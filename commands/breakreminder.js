@@ -114,7 +114,7 @@ module.exports = {
                     currentUser
                 );
 
-                let userdbStop = await User.find({discordId: currentUser}, 'reminderstop');
+                let userdbStop = await User.find({discordId: currentUser}, 'reminderStop');
                 console.log("userdbStop: ", userdbStop);
 
                 // check timer validation
