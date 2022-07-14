@@ -22,21 +22,12 @@ module.exports = {
                     "Interval how many time should the bot remind you to take a break [IN SECONDS]"
                 );
         }),
-    async execute(interaction, message) {
+    async execute(interaction) {
         let result = "";
         try {
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
-            // const checkStop = await User.find(
-            //     { discordId: interaction.user.id },
-            //     (error, data) => {
-            //         if (error) {
-            //             console.log(error);
-            //         } else {
-            //             console.log("DATA: ", data);
-            //         }
-            //     }
-            // );
+
             // console.log(checkUsers);
             let isExist = false;
             let currentUser = interaction.user.id;
@@ -70,12 +61,6 @@ module.exports = {
 
                 // Update user's reminder db
                 const updateUser = await User.findOne({
-                    discordId: currentUser,
-                }).updateOne({
-                    reminder: `${argDuration} ${argInterval}`,
-                });
-
-                const updateOngoing = await User.findOne({
                     discordId: currentUser,
                 }).updateOne({
                     reminder: `${argDuration} ${argInterval}`,
