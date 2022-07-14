@@ -27,14 +27,16 @@ module.exports = {
         try {
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
-            const checkStop = await User.findOne({discordId: interaction.user.id}, (error, data) => {
-                if(error) {
-                    console.log(error);
+            const checkStop = await User.find(
+                { discordId: interaction.user.id },
+                (error, data) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log("DATA: ", data);
+                    }
                 }
-                else {
-                    console.log("DATA: ", data);
-                }
-            })
+            );
             // console.log(checkUsers);
             let isExist = false;
             let currentUser = interaction.user.id;
@@ -56,10 +58,11 @@ module.exports = {
             //     }
             // }
             if (!isExist) {
-                await interaction.reply("Error no user found in database! Please run command /register");
+                await interaction.reply(
+                    "Error no user found in database! Please run command /register"
+                );
                 return;
             } else {
-
                 // Get the user arguments
                 const argDuration = interaction.options.get("duration").value;
                 const argInterval = interaction.options.get("interval").value;
@@ -67,6 +70,12 @@ module.exports = {
 
                 // Update user's reminder db
                 const updateUser = await User.findOne({
+                    discordId: currentUser,
+                }).updateOne({
+                    reminder: `${argDuration} ${argInterval}`,
+                });
+
+                const updateOngoing = await User.findOne({
                     discordId: currentUser,
                 }).updateOne({
                     reminder: `${argDuration} ${argInterval}`,
@@ -129,7 +138,8 @@ module.exports = {
                                         {
                                             color: "#ffda36",
                                             title: "Break Time!! \nLOOK AWAY FROM THE SCREEN AND STAND UP",
-                                            description: "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
+                                            description:
+                                                "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
                                             thumbnail: {
                                                 url: "https://i.imgur.com/8T0qALC.jpg",
                                             },
