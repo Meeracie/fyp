@@ -27,16 +27,16 @@ module.exports = {
         try {
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
-            const checkStop = await User.find(
-                { discordId: interaction.user.id },
-                (error, data) => {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log("DATA: ", data);
-                    }
-                }
-            );
+            // const checkStop = await User.find(
+            //     { discordId: interaction.user.id },
+            //     (error, data) => {
+            //         if (error) {
+            //             console.log(error);
+            //         } else {
+            //             console.log("DATA: ", data);
+            //         }
+            //     }
+            // );
             // console.log(checkUsers);
             let isExist = false;
             let currentUser = interaction.user.id;
