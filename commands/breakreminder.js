@@ -27,7 +27,7 @@ module.exports = {
         try {
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
-            const checkStop = await User.find({username: "alyph"}, (error, data) => {
+            const checkStop = await User.findOne({discordId: interaction.user.id}, (error, data) => {
                 if(error) {
                     console.log(error);
                 }
