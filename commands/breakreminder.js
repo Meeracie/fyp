@@ -2,6 +2,14 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const User = require("../database/schema/user");
 
+function checkStop() {
+    let userdbStop = await User.findOne({
+        discordId: currentUser,
+    }).select("-_id reminderStop");
+    let userDbStopValue = userdbStop.reminderStop;
+    return userDbStopValue;
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("breakreminder")
@@ -126,7 +134,7 @@ module.exports = {
                     // timer function here
                     let timerInterval = setInterval(() => {
                         console.log("im in setInterval")
-                        if (!errorCheck && !userDbStopValue) {
+                        if (!errorCheck && !checkStop()) {
                             userFetch
                                 .send({
                                     embeds: [
