@@ -10,7 +10,7 @@ module.exports = {
         const updateStop = await User.findOne({
             discordId: interaction.user.id,
         }).updateOne({
-            stop: "true",
+            stop: true,
         });
 		await interaction.reply('Reminder stopped!');
 	},

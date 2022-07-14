@@ -114,7 +114,9 @@ module.exports = {
                     currentUser
                 );
 
-                let userdbStop = await User.findOne({discordId: currentUser}).select("-_id reminderStop");
+                let userdbStop = await User.findOne({
+                    discordId: currentUser,
+                }).select("-_id reminderStop");
                 let userDbStopValue = userdbStop.reminderStop;
                 console.log("userdbStop: ", userDbStopValue);
 
@@ -146,8 +148,7 @@ module.exports = {
                             //     "Sent message to ",
                             //     interaction.user.username
                             // );
-                        }
-                        else {
+                        } else {
                             clearInterval(timerInterval);
                         }
                     }, interval * 1000);
@@ -159,10 +160,14 @@ module.exports = {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
                         // console.log("error check in set time out", errorCheck);
-                        if (!errorCheck) {
+                        if (userDbStopValue) {
                             clearTimeout();
                             clearInterval(timerInterval);
-
+                            const updateStop = await User.findOne({
+                                discordId: interaction.user.id,
+                            }).updateOne({
+                                stop: false,
+                            });
                             console.log("Stop timer reminder!");
                         }
                     }, duration * 1000);
