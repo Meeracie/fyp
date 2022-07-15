@@ -19,6 +19,11 @@ module.exports = {
 			}).updateOne({
 				reminderStop: false,
 			});
+            const updateOngoingFalse = await User.findOne({
+                discordId: interaction.user.id,
+            }).updateOne({
+                reminderOngoing: false,
+            });
         }, 1000);
         await interaction.reply("Reminder stopped!");
     },

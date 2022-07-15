@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
+const user = require("../database/schema/user");
 const User = require("../database/schema/user");
 let timerInterval;
 let timeoutReminder;
@@ -13,11 +14,32 @@ async function checkStop(currentUser) {
         console.log("currentUser: " + currentUser);
         let userDbStopValue = userdbStop.reminderStop;
         console.log("in checkstop: ", userDbStopValue);
-        if(userDbStopValue === true) {
+        if (userDbStopValue === true) {
             clearInterval(timerInterval);
             clearTimeout(timeoutReminder);
         }
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+}
 
+async function checkOngoing(currentUser) {
+    try {
+        let userdbOngoing = await User.findOne({
+            discordId: currentUser,
+        }).select("-_id reminderOngoing");
+        console.log("userdbOngoing: " + userdbOngoing);
+        let userDbOngoingValue = userdbOngoing.reminderOngoing;
+        console.log("in checkOngoing: ", userDbOngoingValue);
+        if (userDbOngoingValue === true) {
+            console.log("ONGOING REMINDER!");
+        }
+        console.log("TYPE: ", typeof userDbOngoingValue);
+        console.log(
+            "In checkOnGoing userDbOngoingValue: " + userDbOngoingValue
+        );
+        return userDbOngoingValue;
     } catch (err) {
         console.log(err);
         return false;
@@ -47,13 +69,43 @@ module.exports = {
     async execute(interaction) {
         let result = "";
         try {
+            let isExist = false;
+            let currentUser = interaction.user.id;
+            let userStop = false;
+            let flag = await checkOngoing(currentUser);
+
+            console.log("flag: " + flag);
+            console.log("checkOngoing:" + (await checkOngoing(currentUser)));
+            if (flag === false) {
+                console.log(
+                    "=====================================\nStarting!\n================================"
+                );
+                try {
+                    setTimeout(async () => {
+                        const updateOngoingTrue = await User.findOne({
+                            discordId: currentUser,
+                        }).updateOne({
+                            reminderOngoing: true,
+                        });
+                    }, 500);
+                } catch (e) {
+                    console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+                }
+            } else if (flag === true) {
+                console.log(
+                    "=====================================\nONGOING!\n================================"
+                );
+                await interaction.reply(
+                    "Reminder is ongoing! Type /stopreminder to stop current reminder!"
+                );
+                return;
+            }
+
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
 
             // console.log(checkUsers);
-            let isExist = false;
-            let currentUser = interaction.user.id;
-            let userStop = false;
+
             // const userId = await User.find({username: 'alyph'}).select("-_id reminder");
             // console.log(`userId: ${userId}`);
             // console.log(`user reminder: ${userId[0].reminder}`);
@@ -96,40 +148,6 @@ module.exports = {
                 const duration = parseInt(argDuration);
                 const interval = parseInt(argInterval);
                 result = `Remind me ${argDuration}`;
-
-                // Execute the reminder [Timer logic] (TO DO)
-
-                // const userFetch = await interaction.client.users
-                //     .fetch(currentUser)
-                //     .then((user) => {
-                //         user.send("Take a break!").catch((error) => {
-                //             // console.log('ERROR')
-                //             result.replace(
-                //                 "Your DMs is closed! Please allow direct messages from server members from server's Privacy Settings!"
-                //             );
-                //         });
-                //     });
-
-                // const userFetch = await interaction.client.users.fetch(
-                //     currentUser
-                // );
-                // userFetch.send("Take a break!").catch((error) => {
-                //     interaction.channel.send("Your DMs is closed! Please allow direct messages from server's Privacy Settings!");
-                //     result = "Your DMs is closed! Please allow direct messages from server members from server's Privacy Settings!";
-                // });
-
-                // const userFetch = interaction.client.user.fetch(currentUser)
-                //     .then((user) => {
-
-                //         user.send("Take a break!")
-
-                //     }
-                //     )
-                //     .catch((error) => {
-                //         console.error(error);
-                //         current.result = "Your DMs are closed!";
-                //     });
-                // console.log(`RESULT: ${result}`);
 
                 // LOGIC TIMER (use setTimeout)
                 const userFetch = await interaction.client.users.fetch(
@@ -181,15 +199,15 @@ module.exports = {
 
                     // console.log(errorCheck);
 
-                    timeoutReminder = setTimeout(() => {
-                        // setInterval(() => {
-                        //     userFetch.send('Take a break!');
-                        // }, interval * 1000);
-                        // console.log("error check in set time out", errorCheck);
+                    timeoutReminder = setTimeout(async () => {
                         if (!errorCheck) {
                             clearTimeout();
                             clearInterval(timerInterval);
-                            
+                            const updateOngoingFalse = await User.findOne({
+                                discordId: interaction.user.id,
+                            }).updateOne({
+                                reminderOngoing: false,
+                            });
                             console.log("Stop timer reminder!");
                         }
                     }, duration * 1000);
@@ -202,7 +220,6 @@ module.exports = {
                     return;
                 }
 
-                
                 const exampleEmbed = new MessageEmbed()
                     .setColor("#7972fc")
                     .setTitle("Break Reminder")
