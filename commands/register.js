@@ -27,6 +27,8 @@ module.exports = {
                     username: interaction.user.username,
                     discordId: interaction.user.id,
                     reminder: "",
+                    reminderStop: false,
+                    reminderOngoing: false,
                 });
                 result += "Created user to database!";
                 console.log("Created user to database!");

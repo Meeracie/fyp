@@ -1,6 +1,28 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const User = require("../database/schema/user");
+let timerInterval;
+let timeoutReminder;
+
+async function checkStop(currentUser) {
+    try {
+        let userdbStop = await User.findOne({
+            discordId: currentUser,
+        }).select("-_id reminderStop");
+        console.log("userdbStop: " + userdbStop);
+        console.log("currentUser: " + currentUser);
+        let userDbStopValue = userdbStop.reminderStop;
+        console.log("in checkstop: ", userDbStopValue);
+        if(userDbStopValue === true) {
+            clearInterval(timerInterval);
+            clearTimeout(timeoutReminder);
+        }
+
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,9 +49,11 @@ module.exports = {
         try {
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
+
             // console.log(checkUsers);
             let isExist = false;
             let currentUser = interaction.user.id;
+            let userStop = false;
             // const userId = await User.find({username: 'alyph'}).select("-_id reminder");
             // console.log(`userId: ${userId}`);
             // console.log(`user reminder: ${userId[0].reminder}`);
@@ -39,6 +63,8 @@ module.exports = {
                     isExist = true;
                     console.log("User is exist in database!");
                     console.log(`user reminder: ${checkUsers[i].reminder}`);
+                    userStop = checkUsers[i].stop;
+                    console.log("user stop: ", userStop);
                 }
             }
             // for (const i in userId) {
@@ -48,14 +74,15 @@ module.exports = {
             //     }
             // }
             if (!isExist) {
-                await interaction.reply("Error no user found in database! Please run command /register");
+                await interaction.reply(
+                    "Error no user found in database! Please run command /register"
+                );
                 return;
             } else {
-
                 // Get the user arguments
                 const argDuration = interaction.options.get("duration").value;
                 const argInterval = interaction.options.get("interval").value;
-                console.log(`Arguments: ${argDuration} ${argInterval}`);
+                // console.log(`Arguments: ${argDuration} ${argInterval}`);
 
                 // Update user's reminder db
                 const updateUser = await User.findOne({
@@ -102,18 +129,28 @@ module.exports = {
                 //         console.error(error);
                 //         current.result = "Your DMs are closed!";
                 //     });
-                console.log(`RESULT: ${result}`);
+                // console.log(`RESULT: ${result}`);
 
                 // LOGIC TIMER (use setTimeout)
                 const userFetch = await interaction.client.users.fetch(
                     currentUser
                 );
 
+                let userdbStop = await User.findOne({
+                    discordId: currentUser,
+                }).select("-_id reminderStop");
+                let userDbStopValue = userdbStop.reminderStop;
+                console.log("userdbStop: ", userDbStopValue);
+
                 // check timer validation
                 if (duration > 0 && interval > 0) {
                     let errorCheck = false;
                     // timer function here
-                    let timerInterval = setInterval(() => {
+                    timerInterval = setInterval(() => {
+                        console.log("im in setInterval");
+                        // let flag = checkStop(currentUser);
+                        // console.log("flag: ", flag);
+                        checkStop(currentUser);
                         if (!errorCheck) {
                             userFetch
                                 .send({
@@ -121,7 +158,8 @@ module.exports = {
                                         {
                                             color: "#ffda36",
                                             title: "Break Time!! \nLOOK AWAY FROM THE SCREEN AND STAND UP",
-                                            description: "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
+                                            description:
+                                                "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
                                             thumbnail: {
                                                 url: "https://i.imgur.com/8T0qALC.jpg",
                                             },
@@ -129,31 +167,33 @@ module.exports = {
                                     ],
                                 })
                                 .catch((error) => {
-                                    console.log("error here");
+                                    // console.log("error here");
                                     errorCheck = true;
                                 });
-                            console.log(
-                                "Sent message to ",
-                                interaction.user.username
-                            );
+                            // console.log(
+                            //     "Sent message to ",
+                            //     interaction.user.username
+                            // );
+                        } else {
+                            clearInterval(timerInterval);
                         }
                     }, interval * 1000);
 
-                    console.log(errorCheck);
+                    // console.log(errorCheck);
 
-                    setTimeout(() => {
+                    timeoutReminder = setTimeout(() => {
                         // setInterval(() => {
                         //     userFetch.send('Take a break!');
                         // }, interval * 1000);
-                        console.log("error check in set time out", errorCheck);
+                        // console.log("error check in set time out", errorCheck);
                         if (!errorCheck) {
                             clearTimeout();
                             clearInterval(timerInterval);
-
+                            
                             console.log("Stop timer reminder!");
                         }
                     }, duration * 1000);
-                    console.log("im here");
+                    // console.log("im here");
                 } else {
                     await interaction.reply({
                         content: "Value cannot be less than 0!",
@@ -162,6 +202,7 @@ module.exports = {
                     return;
                 }
 
+                
                 const exampleEmbed = new MessageEmbed()
                     .setColor("#7972fc")
                     .setTitle("Break Reminder")

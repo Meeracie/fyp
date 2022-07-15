@@ -142,6 +142,8 @@ client.on("guildMemberAdd", async (member) => {
         username: member.displayName,
         discordId: member.id,
         reminder: "",
+        reminderStop: false,
+        reminderOngoing: false,
     });
     console.log("Guild member added");
 });
