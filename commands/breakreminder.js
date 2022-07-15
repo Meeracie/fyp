@@ -161,7 +161,7 @@ module.exports = {
                 console.log("userdbStop: ", userDbStopValue);
 
                 // check timer validation
-                if (duration > 0 && interval > 0) {
+                if ((duration >= 60 && interval >= 60) && (duration >= interval)) {
                     let errorCheck = false;
                     // timer function here
                     timerInterval = setInterval(() => {
@@ -214,7 +214,7 @@ module.exports = {
                     // console.log("im here");
                 } else {
                     await interaction.reply({
-                        content: "Value cannot be less than 0!",
+                        content: "Duration must be greater than 60s and Interval must be greater than or equal to 60s\nDuration must be greater than Interval!",
                         ephemeral: true,
                     });
                     return;
