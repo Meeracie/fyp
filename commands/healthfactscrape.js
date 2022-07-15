@@ -50,8 +50,15 @@ module.exports = {
                 healthArray[
                     Math.floor(Math.random() * healthArray.length)
                 ].toString();
-
-            interaction.channel.send(randomFact);
+            
+            const response = new MessageEmbed()
+                .setColor("#e31e80")
+                .setTitle("Health Fact")
+                .setDescription(randomFact)
+                .setThumbnail('https://i.imgur.com/tXeiZtM.png')
+    
+            interaction.channel.send({embeds: [response]});
+            //interaction.channel.send(randomFact);
         })();
 
         await interaction.reply("Health Fact:");
