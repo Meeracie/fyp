@@ -5,8 +5,8 @@ const { MessageEmbed } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("tips")
-        .setDescription("Scrap from website"),
+        .setName("healthfact")
+        .setDescription("Sends you a random health fact"),
     async execute(interaction) {
         let randomFact;
         let healthArray = [];

@@ -3,8 +3,8 @@ const {	MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('waterintake')
-		.setDescription('Replies with Pong!')
+		.setName('cup')
+		.setDescription('Sends you daily water intake based on your weight')
         .addNumberOption((option) => {
             return option
                 .setName("kg")
@@ -27,8 +27,8 @@ module.exports = {
 
         const water = new MessageEmbed()
 			.setColor("#47a9ff")
-            .setTitle("Water Intake")
-            .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres")
+            .setTitle("Daily Water Intake")
+            .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres per day")
             .addField("Cups of water :cup_with_straw:", `${cup}`)
 
 		await interaction.reply({embeds: [water], ephemeral: [true]});

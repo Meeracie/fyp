@@ -6,7 +6,7 @@ const facts = require('./facts.json')
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('healthfact')
+		.setName('fact')
 		.setDescription('Sends you a random health fact'),
 	async execute(interaction) {   
         var healthfacts=facts.content.Health;

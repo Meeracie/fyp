@@ -17,6 +17,7 @@ module.exports = {
             {name: 'See your Profile', value: "`/myprofile`"},
             {name: 'Meditation Music', value: "`/play-rain \n/play-water \n/play-sea`"},
             {name: 'Health', value: "`/healthfact`"},
+            {name: 'Drink', value: "`/waterintake`"},
             {name: 'Others', value: "`/meme \n/bored \n/urban`"}
         );
 
