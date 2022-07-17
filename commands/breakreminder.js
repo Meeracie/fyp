@@ -1,23 +1,26 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
-const user = require("../database/schema/user");
 const User = require("../database/schema/user");
 let timerInterval;
 let timeoutReminder;
+let flagInterval;
+let flagTimeout;
 
 async function checkStop(currentUser) {
     try {
         let userdbStop = await User.findOne({
             discordId: currentUser,
         }).select("-_id reminderStop");
-        console.log("userdbStop: " + userdbStop);
-        console.log("currentUser: " + currentUser);
+        // console.log("userdbStop: " + userdbStop);
+        // console.log("currentUser: " + currentUser);
         let userDbStopValue = userdbStop.reminderStop;
         console.log("in checkstop: ", userDbStopValue);
         if (userDbStopValue === true) {
             clearInterval(timerInterval);
             clearTimeout(timeoutReminder);
         }
+
+        return userDbStopValue;
     } catch (err) {
         console.log(err);
         return false;
@@ -29,16 +32,16 @@ async function checkOngoing(currentUser) {
         let userdbOngoing = await User.findOne({
             discordId: currentUser,
         }).select("-_id reminderOngoing");
-        console.log("userdbOngoing: " + userdbOngoing);
+        // console.log("userdbOngoing: " + userdbOngoing);
         let userDbOngoingValue = userdbOngoing.reminderOngoing;
-        console.log("in checkOngoing: ", userDbOngoingValue);
-        if (userDbOngoingValue === true) {
-            console.log("ONGOING REMINDER!");
-        }
-        console.log("TYPE: ", typeof userDbOngoingValue);
-        console.log(
-            "In checkOnGoing userDbOngoingValue: " + userDbOngoingValue
-        );
+        // console.log("in checkOngoing: ", userDbOngoingValue);
+        // if (userDbOngoingValue === true) {
+        //     console.log("ONGOING REMINDER!");
+        // }
+        // console.log("TYPE: ", typeof userDbOngoingValue);
+        // console.log(
+        //     "In checkOnGoing userDbOngoingValue: " + userDbOngoingValue
+        // );
         return userDbOngoingValue;
     } catch (err) {
         console.log(err);
@@ -69,32 +72,18 @@ module.exports = {
     async execute(interaction) {
         let result = "";
         try {
+            clearInterval(timerInterval);
+            clearTimeout(timeoutReminder);
             let isExist = false;
             let currentUser = interaction.user.id;
-            let userStop = false;
             let flag = await checkOngoing(currentUser);
 
-            console.log("flag: " + flag);
-            console.log("checkOngoing:" + (await checkOngoing(currentUser)));
-            if (flag === false) {
-                console.log(
-                    "=====================================\nStarting!\n================================"
-                );
-                try {
-                    setTimeout(async () => {
-                        const updateOngoingTrue = await User.findOne({
-                            discordId: currentUser,
-                        }).updateOne({
-                            reminderOngoing: true,
-                        });
-                    }, 500);
-                } catch (e) {
-                    console.log("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-                }
-            } else if (flag === true) {
-                console.log(
-                    "=====================================\nONGOING!\n================================"
-                );
+            // console.log("flag: " + flag);
+            // console.log("checkOngoing:" + (await checkOngoing(currentUser)));
+            if (flag === true) {
+                // console.log(
+                //     "=====================================\nONGOING!\n================================"
+                // );
                 await interaction.reply(
                     "Reminder is ongoing! Type /stopreminder to stop current reminder!"
                 );
@@ -114,9 +103,7 @@ module.exports = {
                 if (currentUser === checkUsers[i].discordId) {
                     isExist = true;
                     console.log("User is exist in database!");
-                    console.log(`user reminder: ${checkUsers[i].reminder}`);
-                    userStop = checkUsers[i].stop;
-                    console.log("user stop: ", userStop);
+                    // console.log(`user reminder: ${checkUsers[i].reminder}`);
                 }
             }
             // for (const i in userId) {
@@ -154,22 +141,31 @@ module.exports = {
                     currentUser
                 );
 
-                let userdbStop = await User.findOne({
-                    discordId: currentUser,
-                }).select("-_id reminderStop");
-                let userDbStopValue = userdbStop.reminderStop;
-                console.log("userdbStop: ", userDbStopValue);
-
                 // check timer validation
-                if ((duration >= 60 && interval >= 60) && (duration >= interval)) {
+                if (duration >= interval && duration >= 60 && interval >= 60) {
+                    setTimeout(async () => {
+                        const updateOngoingTrue = await User.findOne({
+                            discordId: currentUser,
+                        }).updateOne({
+                            reminderOngoing: true,
+                        });
+                    }, 1000);
                     let errorCheck = false;
                     // timer function here
-                    timerInterval = setInterval(() => {
-                        console.log("im in setInterval");
+
+                    timerInterval = setInterval(async () => {
+                        // console.log("im in setInterval");
                         // let flag = checkStop(currentUser);
                         // console.log("flag: ", flag);
-                        checkStop(currentUser);
-                        if (!errorCheck) {
+                        flagInterval = await checkStop(currentUser);
+                        console.log("flagInterval: ", flagInterval);
+        
+                        if (flagInterval === true) {
+                            clearInterval(timerInterval);
+                            clearTimeout(timeoutReminder);
+                            
+                        }
+                        if (!errorCheck && flagInterval != true) {
                             userFetch
                                 .send({
                                     embeds: [
@@ -193,6 +189,11 @@ module.exports = {
                             //     interaction.user.username
                             // );
                         } else {
+                            const updateStop = await User.findOne({
+                                discordId: interaction.user.id,
+                            }).updateOne({
+                                reminderStop: false,
+                            });
                             clearInterval(timerInterval);
                         }
                     }, interval * 1000);
@@ -200,6 +201,13 @@ module.exports = {
                     // console.log(errorCheck);
 
                     timeoutReminder = setTimeout(async () => {
+                        flagInterval = await checkStop(currentUser);
+                        console.log("flagInterval: ", flagInterval);
+
+                        if (flagInterval === true) {
+                            clearInterval(timerInterval);
+                            clearTimeout(timeoutReminder);
+                        }
                         if (!errorCheck) {
                             clearTimeout();
                             clearInterval(timerInterval);
@@ -214,7 +222,8 @@ module.exports = {
                     // console.log("im here");
                 } else {
                     await interaction.reply({
-                        content: "Duration must be greater than 60s and Interval must be greater than or equal to 60s\nDuration must be greater than Interval!",
+                        content:
+                            "Duration must be greater than 60s and Interval must be greater than or equal to 60s\nDuration must be greater than Interval!",
                         ephemeral: true,
                     });
                     return;
@@ -226,7 +235,7 @@ module.exports = {
                     .setDescription("Your reminder has been set!")
                     .addField(
                         "Reminder",
-                        `Duration time: ${argDuration} \n Time interval: ${argInterval}`
+                        `Duration time: ${argDuration}s \n Time interval: ${argInterval}s`
                     )
                     .setThumbnail("https://i.imgur.com/uZvm9tC.gif");
                 //.setImage('https://imgur.com/uZvm9tC');
