@@ -1,4 +1,5 @@
 // Require the necessary discord.js classes
+require('newrelic');
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Intents } = require("discord.js");
