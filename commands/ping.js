@@ -9,6 +9,6 @@ module.exports = {
 	async execute(interaction) {
 		const latency = Math.abs(Date.now() - interaction.createdTimestamp);
 		await interaction.reply('Pong ', latency, 'ms');
-		interaction.editReply({content: `> 🏓 Pong! Latency: **${Client.ws.ping}ms**`});
-	},
+		interaction.editReply({content: `> 🏓 Pong! Latency: **${interaction.client.ws.latency}ms**`});
+	}
 };
