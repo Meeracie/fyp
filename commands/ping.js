@@ -6,7 +6,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ping')
 		.setDescription('Replies with Pong!'),
-	async execute(interaction, Client) {
+	async execute(interaction) {
 		const latency = Math.abs(Date.now() - interaction.createdTimestamp);
 		await interaction.reply('Pong ', latency, 'ms');
 		interaction.editReply({content: `> 🏓 Pong! Latency: **${Client.ws.ping}ms**`});
