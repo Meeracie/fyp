@@ -19,6 +19,10 @@ module.exports = {
 		.addField("Roles", `${interaction.member.roles.cache.map(r => r).join(" ").replace("@everyone", "" || "None")}`)
 		.addField("Discord User Since", `${moment(interaction.user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`)
 		.addField("Server Member Since", `${moment(interaction.member.joinedAt).format('MMMM Do YYYY, h:mm:ss a')}`)
+		interaction.channel.send('Loading data .. ').then(async (msg) => {
+			msg.delete();
+			interaction.channel.send(`Latency is ${msg.createdTimestamp - interaction.createdTimestamp}ms`);
+		})
 		await interaction.reply({embeds: [Response]});
 		
 	},
