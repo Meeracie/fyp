@@ -10,7 +10,7 @@ module.exports = {
     async execute(interaction) {
         let randomFact;
         let healthArray = [];
-        (async () => {
+        
             const browser = await puppeteer.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -57,10 +57,8 @@ module.exports = {
                 .setDescription(randomFact)
                 .setThumbnail('https://i.imgur.com/tXeiZtM.png')
     
-            interaction.channel.send({embeds: [response]});
+            //interaction.channel.send({embeds: [response]});
             //interaction.channel.send(randomFact);
-        })();
-
-        await interaction.reply("Health Fact:");
+        await interaction.reply({embeds: [response]});
     },
 };

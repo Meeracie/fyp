@@ -26,6 +26,7 @@ module.exports = {
         }
 
         const botLatency = Date.now() - interaction.createdTimestamp;
+        const ping = interaction.client.ws.ping;
 
         const water = new MessageEmbed()
 			.setColor("#47a9ff")
@@ -33,9 +34,12 @@ module.exports = {
             .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres per day")
             .addField("Cups of water :cup_with_straw:", `${cup}`)
 
-            .addField("Latency🏓`" + botLatency + "`ms")
+            .addField("Latency🏓", `${botLatency}ms`)
+            .addField("API Latency🏓", `${ping}ms`)
 
 
 		await interaction.reply({embeds: [water], ephemeral: [true]});
+
+
 	},
 };
