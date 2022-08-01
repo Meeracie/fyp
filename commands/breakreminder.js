@@ -237,6 +237,7 @@ module.exports = {
                         "Reminder",
                         `Duration time: ${argDuration}s \n Time interval: ${argInterval}s`
                     )
+                    
                     .setThumbnail("https://i.imgur.com/uZvm9tC.gif");
                 //.setImage('https://imgur.com/uZvm9tC');
 

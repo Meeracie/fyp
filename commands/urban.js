@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { request }= require('undici');
+const {	MessageEmbed } = require('discord.js');
 
 async function getJSONResponse(body) {
 	let fullBody = '';
@@ -24,6 +25,18 @@ module.exports = {
 
 		const dictResult = await request(`https://api.urbandictionary.com/v0/define?${query}`);
 		const { list } = await getJSONResponse(dictResult.body);
-        await interaction.reply(`**${term}**: ${list[0].definition}`);
+
+        const botLatency = Date.now() - interaction.createdTimestamp;
+        const ping = interaction.client.ws.ping;
+
+        const embed = new MessageEmbed()
+        .setTitle('Definition')
+        .setDescription(`**${term}**: ${list[0].definition}`)
+        .setFields(
+            { name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+            { name: "API Latency🏓", value: `${ping}ms`, inline: true },
+        )
+
+        await interaction.reply({embeds: [embed]});
     },
 };

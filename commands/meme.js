@@ -16,10 +16,18 @@ module.exports = {
         } catch(e) {
             console.log(e);
         }
+
+        const botLatency = Date.now() - interaction.createdTimestamp;
+        const ping = interaction.client.ws.ping;
+
         const embed = new MessageEmbed()
         .setTitle('Meme')
         .setDescription(response.data.caption)
         .setImage(response.data.image)
+        .setFields(
+            { name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+            { name: "API Latency🏓", value: `${ping}ms`, inline: true },
+        )
 
         await interaction.reply({embeds: [embed]});
     }

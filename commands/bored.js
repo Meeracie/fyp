@@ -18,8 +18,16 @@ module.exports = {
             console.error(err);
         }
 
+        const botLatency = Date.now() - interaction.createdTimestamp;
+        const ping = interaction.client.ws.ping;
+
         const embed = new MessageEmbed()
         .setDescription(response.data.activity)
+        .setFields(
+            { name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+            { name: "API Latency🏓", value: `${ping}ms`, inline: true },
+        )
+        
 
         await interaction.reply({embeds: [embed]});
     }

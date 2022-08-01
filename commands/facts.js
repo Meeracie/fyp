@@ -16,11 +16,19 @@ module.exports = {
 		let result = await ans[randPhrase];
 		// const healthFact = await mongoose.find(); 
 		// console.log(healthFact);
+
+		const botLatency = Date.now() - interaction.createdTimestamp;
+        const ping = interaction.client.ws.ping;
+		
 		const response = new MessageEmbed()
 			.setColor("#e31e80")
 			.setTitle("Health Fact")
 			.setDescription(result)
 			.setThumbnail('https://i.imgur.com/tXeiZtM.png')
+			.setFields(
+				{ name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+				{ name: "API Latency🏓", value: `${ping}ms`, inline: true },
+			)
 
 		await interaction.reply({embeds: [response]});
 	},

@@ -51,11 +51,18 @@ module.exports = {
                     Math.floor(Math.random() * healthArray.length)
                 ].toString();
             
+                const botLatency = Date.now() - interaction.createdTimestamp;
+                const ping = interaction.client.ws.ping;
+
             const response = new MessageEmbed()
                 .setColor("#e31e80")
                 .setTitle("Health Fact")
                 .setDescription(randomFact)
                 .setThumbnail('https://i.imgur.com/tXeiZtM.png')
+                .setFields(
+                    { name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+		            { name: "API Latency🏓", value: `${ping}ms`, inline: true },
+                )
     
             //interaction.channel.send({embeds: [response]});
             //interaction.channel.send(randomFact);

@@ -33,9 +33,10 @@ module.exports = {
             .setTitle("Daily Water Intake")
             .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres per day")
             .addField("Cups of water :cup_with_straw:", `${cup}`)
-
-            .addField("Latency🏓", `${botLatency}ms`)
-            .addField("API Latency🏓", `${ping}ms`)
+            .setFields(
+                { name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+                { name: "API Latency🏓", value: `${ping}ms`, inline: true },
+            )
 
 
 		await interaction.reply({embeds: [water], ephemeral: [true]});
