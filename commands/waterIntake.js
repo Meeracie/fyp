@@ -25,11 +25,16 @@ module.exports = {
             console.error(err);
         }
 
+        const botLatency = Date.now() - interaction.createdTimestamp;
+
         const water = new MessageEmbed()
 			.setColor("#47a9ff")
             .setTitle("Daily Water Intake")
             .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres per day")
             .addField("Cups of water :cup_with_straw:", `${cup}`)
+
+            .addfield("Latency:", `${botLatency}`, {inline: true})
+
 
 		await interaction.reply({embeds: [water], ephemeral: [true]});
 	},
