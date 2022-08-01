@@ -33,7 +33,7 @@ module.exports = {
             .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres per day")
             .addField("Cups of water :cup_with_straw:", `${cup}`)
 
-            .addField("Latency:", `${botLatency}`, {inline: true})
+            .setDescription("Latency🏓`" + botLatency + "`ms")
 
 
 		await interaction.reply({embeds: [water], ephemeral: [true]});
