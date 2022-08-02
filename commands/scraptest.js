@@ -48,7 +48,7 @@ module.exports = {
                 let row = $(el).text().replace(/(\s+)/g, " ");
                 row = $(el)
                     .text()
-                    
+                    .replace(/[0-9]+. /g, "")
                     .trim();
                 console.log(`${row}`);
                 healthArray.push(row);
@@ -66,7 +66,7 @@ module.exports = {
         //interaction.channel.send(randomFact);
 
         await interaction.reply("Working on it ...");
-        await wait(2000);
+        await wait(4000);
         await interaction.editReply(randomFact);
     },
 };
