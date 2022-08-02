@@ -159,4 +159,13 @@ client.on("guildMemberAdd", async (member) => {
 // });
 
 // Login to Discord with your client's token
+
+const express = require('express');
+const app = express();
+const port = 5000;
+
+app.get('/', (req, res) => res.send('Hello World!'));
+
+
 client.login(process.env.token);
+app.listen(process.env.PORT || port)
