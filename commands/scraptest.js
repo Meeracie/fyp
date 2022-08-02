@@ -48,7 +48,7 @@ module.exports = {
                 let row = $(el).text().replace(/(\s+)/g, " ");
                 row = $(el)
                     .text()
-                    .replace(/[0-9]+. /g, "")
+                    
                     .trim();
                 console.log(`${row}`);
                 healthArray.push(row);
