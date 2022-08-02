@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const { MessageEmbed } = require("discord.js");
-
+const wait = require('node:timers/promises').setTimeout;
 // (async () => {
 //     console.log('Im in');
 //         const browser = await puppeteer.launch();
@@ -65,7 +65,7 @@ module.exports = {
         //console.log(`Random Health Fact: ${randomFact}`);
         //interaction.channel.send(randomFact);
 
-        await interaction.reply("Working on it ...");
+        await interaction.deferReply();
         await wait(4000);
         await interaction.editReply(randomFact);
     },
