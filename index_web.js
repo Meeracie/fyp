@@ -164,9 +164,7 @@ const express = require('express');
 const app = express();
 const port = 5000;
 
-app.get('/', (request, response) => {
-	return response.sendFile('index.html', { root: '.' });
-});
+app.get('/', (req, res) => res.send('Hello World!'));
 
 client.login(process.env.token);
 
