@@ -157,5 +157,5 @@ client.on("guildMemberAdd", async (member) => {
 //     const savedUser = await newUser.save();
 //     console.log('Create new user!');
 // });
-
 // Login to Discord with your client's token
+client.login(process.env.token)
