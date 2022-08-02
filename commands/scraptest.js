@@ -65,7 +65,8 @@ module.exports = {
         //console.log(`Random Health Fact: ${randomFact}`);
         //interaction.channel.send(randomFact);
 
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.reply("Working on it ...");
+        await wait(2000);
         await interaction.editReply(randomFact);
     },
 };
