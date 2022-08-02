@@ -11,6 +11,10 @@ module.exports = {
 		const member = interaction.options.getMember('target');
 		// const member = interaction.guild.members.cache.get(interaction.user.id);
 		console.log("Member is ", interaction.member);
+		
+		const botLatency = Date.now() - interaction.createdTimestamp;
+        const ping = interaction.client.ws.ping;
+		
 		const Response = new MessageEmbed()
 		.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({dynamic: true}))
 		.setThumbnail(interaction.user.displayAvatarURL({dynamic: true}))
@@ -19,10 +23,10 @@ module.exports = {
 		.addField("Roles", `${interaction.member.roles.cache.map(r => r).join(" ").replace("@everyone", "" || "None")}`)
 		.addField("Discord User Since", `${moment(interaction.user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`)
 		.addField("Server Member Since", `${moment(interaction.member.joinedAt).format('MMMM Do YYYY, h:mm:ss a')}`)
-		interaction.channel.send('Loading data .. ').then(async (msg) => {
-			msg.delete();
-			interaction.channel.send(`Latency is ${msg.createdTimestamp - interaction.createdTimestamp}ms`);
-		})
+		.addFields(
+			{ name: "Latency🏓", value: `${botLatency}ms`, inline: true },
+			{ name: "API Latency🏓", value: `${ping}ms`, inline: true },
+		)
 		await interaction.reply({embeds: [Response]});
 		
 	},

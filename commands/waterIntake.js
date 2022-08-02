@@ -32,8 +32,9 @@ module.exports = {
 			.setColor("#47a9ff")
             .setTitle("Daily Water Intake")
             .setDescription("You should drink about `" + waterIntake.toFixed(2) + "` litres per day")
-            .addField("Cups of water :cup_with_straw:", `${cup}`)
-            .setFields(
+            //.addField("Cups of water :cup_with_straw:", `${cup}`)
+            .addFields(
+                { name: "Cups of water :cup_with_straw:", value: `${cup}`},
                 { name: "Latency🏓", value: `${botLatency}ms`, inline: true },
                 { name: "API Latency🏓", value: `${ping}ms`, inline: true },
             )
