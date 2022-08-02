@@ -50,14 +50,14 @@ module.exports = {
                     .text()
                     .replace(/[0-9]+. /g, "")
                     .trim();
-                console.log(`${row}`);
+                // console.log(`${row}`);
                 healthArray.push(row);
             });
 
         await browser.close();
         // console.log("Im out");
-        console.log("healthArray: ", healthArray);
-        console.log("total array: ", healthArray.length);
+        // console.log("healthArray: ", healthArray);
+        // console.log("total array: ", healthArray.length);
         randomFact =
             healthArray[
                 Math.floor(Math.random() * healthArray.length)
