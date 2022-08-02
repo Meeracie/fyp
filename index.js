@@ -158,4 +158,4 @@ client.on("guildMemberAdd", async (member) => {
 //     console.log('Create new user!');
 // });
 // Login to Discord with your client's token
-client.login(process.env.token)
+client.login(process.env.token);
