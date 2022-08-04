@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-require('newrelic');
+require("newrelic");
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Intents } = require("discord.js");
@@ -9,10 +9,18 @@ const { Client, Collection, Intents } = require("discord.js");
 const mongoose = require("mongoose");
 // const testSchema = require('./test-schema');
 const User = require("./database/schema/user");
+const cooldown = new Set();
+///This is 1 minute, you can change it to whatever value
+const cooldownTime = 3000;
 
 // Create a new client instance
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES],
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+    ],
 });
 // client.Database = require('./database/mongoose');
 
@@ -73,21 +81,31 @@ client.once("ready", async () => {
 });
 
 client.on("interactionCreate", async (interaction) => {
+    if (cooldown.has(interaction.user.id)) {
+        interaction.reply({ content: `Please wait 3s for the cooldown to end` });
+    } else {
     if (!interaction.isCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
 
     if (!command) return;
 
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        await interaction.reply({
-            content: "There was an error while executing this command!",
-            ephemeral: true,
-        });
+        try {
+            await command.execute(interaction);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({
+                content: "There was an error while executing this command!",
+                ephemeral: true,
+            });
+        }
+        cooldown.add(interaction.user.id);
+        setTimeout(() => {
+          // Removes the user from the set after 1 minute
+            cooldown.delete(interaction.user.id);
+        }, cooldownTime);
     }
+    
 });
 
 // Add user to db every time they send message

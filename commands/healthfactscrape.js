@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const { MessageEmbed } = require("discord.js");
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,8 +10,9 @@ module.exports = {
         .setDescription("Sends you a random health fact"),
     async execute(interaction) {
         let randomFact;
-        let healthArray = [];
-        
+        // let healthArray = [];
+            try {
+            await interaction.deferReply({ephemeral: true});
             const browser = await puppeteer.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -28,28 +30,32 @@ module.exports = {
             });
 
 
-
+            
             const $ = cheerio.load(pageData.html);
+            let $h3 = $('.round-number h3');
+            let rnd = Math.floor(Math.random() * $h3.length);
+            randomFact = $h3.eq(rnd).text().replace(/[0-9]+\. /g, "").trim();
             //const element = $()
-            $(".round-number")
-                .find("h3")
-                .each(function (i, el) {
-                    let row = $(el).text().replace(/(\s+)/g, " ");
-                    row = $(el)
-                        .text()
-                        .replace(/[0-9]+. /g, "")
-                        .trim();
-
-                    healthArray.push(row);
-                });
+            // $(".round-number")
+            //     .find("h3")
+            //     .each(function (i, el) {
+            //         let row = $(el).text().replace(/(\s+)/g, " ");
+            //         row = $(el)
+            //             .text()
+            //             .replace(/[0-9]+\. /g, "")
+            //             .trim();
+            //         healthArray.push(row);
+            //     });
 
             await browser.close();
+            } catch (e) {
+                console.log(e);
+            }
 
-
-            randomFact =
-                healthArray[
-                    Math.floor(Math.random() * healthArray.length)
-                ].toString();
+            // randomFact =
+            //     healthArray[
+            //         Math.floor(Math.random() * healthArray.length)
+            //     ].toString();
             
                 const botLatency = Date.now() - interaction.createdTimestamp;
                 const ping = interaction.client.ws.ping;
@@ -66,6 +72,8 @@ module.exports = {
     
             //interaction.channel.send({embeds: [response]});
             //interaction.channel.send(randomFact);
-        await interaction.reply({embeds: [response]});
+            
+            //await wait(3000);
+            await interaction.editReply({embeds: [response]});
     },
 };
