@@ -142,7 +142,7 @@ module.exports = {
                 );
 
                 // check timer validation
-                if (duration >= interval && duration >= 60 && interval >= 60) {
+                if (duration >= interval && duration >= 60 && interval >= 15) {
                     setTimeout(async () => {
                         const updateOngoingTrue = await User.findOne({
                             discordId: currentUser,
@@ -223,7 +223,7 @@ module.exports = {
                 } else {
                     await interaction.reply({
                         content:
-                            "Duration must be greater than 60s and Interval must be greater than or equal to 60s\nDuration must be greater than Interval!",
+                            "Duration must be greater than 60s and Interval must be greater than or equal to 15s\nDuration must be greater than Interval!",
                         ephemeral: true,
                     });
                     return;
@@ -248,11 +248,5 @@ module.exports = {
         } catch (err) {
             console.error(err);
         }
-        // await interaction.channel.send(result);
-        // const file = new MessageAttachment('../assets/alarm.gif');
-
-        //await interaction.channel.send({ embeds: [exampleEmbed] });
-
-        //await interaction.reply("Error no user found in database! Please run command /register")
     },
 };
