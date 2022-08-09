@@ -13,7 +13,7 @@ module.exports = {
         let response;
         try {
             response = await axios.get(url);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (err) {
             console.error(err);
         }

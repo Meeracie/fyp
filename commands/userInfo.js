@@ -10,7 +10,7 @@ module.exports = {
 		// await interaction.reply(`Hello, ${interaction.user.tag}`)
 		const member = interaction.options.getMember('target');
 		// const member = interaction.guild.members.cache.get(interaction.user.id);
-		console.log("Member is ", interaction.member);
+		// console.log("Member is ", interaction.member);
 		
 		const botLatency = Date.now() - interaction.createdTimestamp;
         const ping = interaction.client.ws.ping;
