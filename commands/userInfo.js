@@ -20,7 +20,7 @@ module.exports = {
 		.setThumbnail(interaction.user.displayAvatarURL({dynamic: true}))
 		.setColor("#5298e3")
 		.addField("UserID", interaction.user.id, false)
-		.addField("Roles", `${interaction.member.roles.cache.map(r => r).join(" ").replace("@everyone", "" || "")}`)
+		.addField("Roles", `${interaction.member.roles.cache.map(r => r).join(" ").replace("@everyone", "_" || "")}`)
 		.addField("Discord User Since", `${moment(interaction.user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`)
 		.addField("Server Member Since", `${moment(interaction.member.joinedAt).format('MMMM Do YYYY, h:mm:ss a')}`)
 		.addFields(

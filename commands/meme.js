@@ -7,6 +7,7 @@ module.exports = {
         .setName('meme')
         .setDescription('Send random meme'),
     async execute(interaction) {
+        await interaction.deferReply();
         const url = 'https://some-random-api.ml/meme';
 
         let response;
@@ -29,6 +30,6 @@ module.exports = {
             { name: "API Latency🏓", value: `${ping}ms`, inline: true },
         )
 
-        await interaction.reply({embeds: [embed]});
+        await interaction.editReply({embeds: [embed]});
     }
 };
