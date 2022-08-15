@@ -14,7 +14,7 @@ async function checkStop(currentUser) {
         // console.log("userdbStop: " + userdbStop);
         // console.log("currentUser: " + currentUser);
         let userDbStopValue = userdbStop.reminderStop;
-        console.log("in checkstop: ", userDbStopValue);
+        // console.log("in checkstop: ", userDbStopValue);
         if (userDbStopValue === true) {
             clearInterval(timerInterval);
             clearTimeout(timeoutReminder);
@@ -34,7 +34,7 @@ async function checkOngoing(currentUser) {
         }).select("-_id reminderOngoing");
         // console.log("userdbOngoing: " + userdbOngoing);
         let userDbOngoingValue = userdbOngoing.reminderOngoing;
-        console.log("in checkOngoing: ", userDbOngoingValue);
+        // console.log("in checkOngoing: ", userDbOngoingValue);
         // if (userDbOngoingValue === true) {
         //     console.log("ONGOING REMINDER!");
         // }
@@ -81,7 +81,7 @@ module.exports = {
             for (const i in checkUsers) {
                 if (currentUser === checkUsers[i].discordId) {
                     isExist = true;
-                    console.log(`User ${currentUser} is already is exist in database!`);
+                    console.log(`User ${currentUser} is already exist in database!`);
                 }
             }
             // for (const i in userId) {
