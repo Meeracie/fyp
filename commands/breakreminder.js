@@ -170,7 +170,7 @@ module.exports = {
                         flagInterval = await checkOngoing(currentUser);
                         //console.log("flagInterval: ", flagInterval);
         
-                        if (flagInterval === true) {
+                        if (flagInterval === false) {
                             clearInterval(timerInterval);
                             clearTimeout(timeoutReminder);
                             
@@ -207,7 +207,7 @@ module.exports = {
                         flagInterval = await checkOngoing(currentUser);
                         // console.log("flagInterval: ", flagInterval);
 
-                        if (flagInterval === true) {
+                        if (flagInterval === false) {
                             clearInterval(timerInterval);
                             clearTimeout(timeoutReminder);
                         }
