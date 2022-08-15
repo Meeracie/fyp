@@ -2,8 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const User = require("../database/schema/user");
 var timerInterval;
-let timeoutReminder;
-let flagInterval;
+var timeoutReminder;
+var flagInterval;
 let flagTimeout;
 
 async function checkStop(currentUser) {
@@ -72,39 +72,16 @@ module.exports = {
     async execute(interaction) {
         let result = "";
         try {
-            // clearInterval(timerInterval);
-            // clearTimeout(timeoutReminder);
             let isExist = false;
             let currentUser = interaction.user.id;
-            let flag = await checkOngoing(currentUser);
-
-            // console.log("flag: " + flag);
-    
-            // Prevent duplication of breakreminder when there is already reminder ongoing.
-            if (flag === true) {
-                // console.log(
-                //     "=====================================\nONGOING!\n================================"
-                // );
-                await interaction.reply(
-                    "Reminder is ongoing! Type /stopreminder to stop current reminder!"
-                );
-                return;
-            }
 
             console.log("Checking user in database...");
             const checkUsers = await User.find({}).select("-_id");
 
-            // console.log(checkUsers);
-
-            // const userId = await User.find({username: 'alyph'}).select("-_id reminder");
-            // console.log(`userId: ${userId}`);
-            // console.log(`user reminder: ${userId[0].reminder}`);
-            // console.log(userId.toString.toString())
             for (const i in checkUsers) {
                 if (currentUser === checkUsers[i].discordId) {
                     isExist = true;
-                    console.log("User is exist in database!");
-                    // console.log(`user reminder: ${checkUsers[i].reminder}`);
+                    console.log(`User ${currentUser} is already is exist in database!`);
                 }
             }
             // for (const i in userId) {
@@ -119,7 +96,20 @@ module.exports = {
                 );
                 return;
             } else {
-                
+                let flag = await checkOngoing(currentUser);
+
+                // console.log("flag: " + flag);
+    
+                // Prevent duplication of breakreminder when there is already reminder ongoing.
+                if (flag === true) {
+                    // console.log(
+                    //     "=====================================\nONGOING!\n================================"
+                    // );
+                    await interaction.reply(
+                        "Reminder is ongoing! Type /stopreminder to stop current reminder!"
+                    );
+                    return;
+                }
                 // Get the user arguments
                 const argDuration = interaction.options.get("duration").value;
                 const argInterval = interaction.options.get("interval").value;
@@ -159,7 +149,6 @@ module.exports = {
                         reminderOngoing: true,
                     });
 
-
                     let errorCheck = false;
                     // timer function here
 
@@ -169,35 +158,35 @@ module.exports = {
                         // console.log("flag: ", flag);
                         flagInterval = await checkOngoing(currentUser);
                         //console.log("flagInterval: ", flagInterval);
-        
+
                         if (flagInterval === false) {
                             clearInterval(timerInterval);
                             clearTimeout(timeoutReminder);
-                            
-                        }
-                        if (!errorCheck) {
-                            userFetch
-                                .send({
-                                    embeds: [
-                                        {
-                                            color: "#ffda36",
-                                            title: "Break Time!! \nLOOK AWAY FROM THE SCREEN AND STAND UP",
-                                            description:
-                                                "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
-                                            thumbnail: {
-                                                url: "https://i.imgur.com/8T0qALC.jpg",
+                        } else {
+                            if (!errorCheck) {
+                                userFetch
+                                    .send({
+                                        embeds: [
+                                            {
+                                                color: "#ffda36",
+                                                title: "Break Time!! \nLOOK AWAY FROM THE SCREEN AND STAND UP",
+                                                description:
+                                                    "5 minute breaks will do. \nProlonged screen time is harmful. Relax your eyes.",
+                                                thumbnail: {
+                                                    url: "https://i.imgur.com/8T0qALC.jpg",
+                                                },
                                             },
-                                        },
-                                    ],
-                                })
-                                .catch((error) => {
-                                    // console.log("error here");
-                                    errorCheck = true;
-                                });
-                            console.log(
-                                "Sent message to ",
-                                interaction.user.username
-                            );
+                                        ],
+                                    })
+                                    .catch((error) => {
+                                        // console.log("error here");
+                                        errorCheck = true;
+                                    });
+                                console.log(
+                                    "Sent message to ",
+                                    interaction.user.username
+                                );
+                            }
                         }
                     }, interval * 1000);
 
@@ -219,7 +208,10 @@ module.exports = {
                             }).updateOne({
                                 reminderOngoing: false,
                             });
-                            console.log("Stop timer reminder for ", interaction.user.username);
+                            console.log(
+                                "Stop timer reminder for ",
+                                interaction.user.username
+                            );
                         }
                     }, duration * 1010);
                     // console.log("im here");
@@ -240,7 +232,7 @@ module.exports = {
                         "Reminder",
                         `Duration time: ${argDuration}s \n Time interval: ${argInterval}s`
                     )
-                    
+
                     .setThumbnail("https://i.imgur.com/uZvm9tC.gif");
                 //.setImage('https://imgur.com/uZvm9tC');
 

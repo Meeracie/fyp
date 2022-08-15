@@ -12,7 +12,7 @@ module.exports = {
         let randomFact;
         // let healthArray = [];
             try {
-            await interaction.deferReply({ephemeral: true});
+            await interaction.deferReply();
             const browser = await puppeteer.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],

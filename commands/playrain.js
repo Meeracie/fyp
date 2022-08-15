@@ -15,7 +15,7 @@ module.exports = {
         const voiceChannel = interaction.guild.members.cache.get(interaction.member.user.id).voice.channel;
 
         if (!voiceChannel)
-            return interaction.channel.send( 
+            return interaction.reply( 
                 "❌ You need to be in a voice channel to play music!"
             );
 
