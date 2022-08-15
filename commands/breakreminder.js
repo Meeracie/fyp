@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const User = require("../database/schema/user");
-let timerInterval;
+var timerInterval;
 let timeoutReminder;
 let flagInterval;
 let flagTimeout;
@@ -72,8 +72,8 @@ module.exports = {
     async execute(interaction) {
         let result = "";
         try {
-            clearInterval(timerInterval);
-            clearTimeout(timeoutReminder);
+            // clearInterval(timerInterval);
+            // clearTimeout(timeoutReminder);
             let isExist = false;
             let currentUser = interaction.user.id;
             let flag = await checkOngoing(currentUser);
@@ -118,6 +118,7 @@ module.exports = {
                 );
                 return;
             } else {
+                
                 // Get the user arguments
                 const argDuration = interaction.options.get("duration").value;
                 const argInterval = interaction.options.get("interval").value;
@@ -142,14 +143,22 @@ module.exports = {
                 );
 
                 // check timer validation
-                if (duration >= interval && duration >= 60 && interval >= 15) {
-                    setTimeout(async () => {
-                        const updateOngoingTrue = await User.findOne({
-                            discordId: currentUser,
-                        }).updateOne({
-                            reminderOngoing: true,
-                        });
-                    }, 1000);
+                if (duration >= interval && interval > 0) {
+                    // setTimeout(async () => {
+                    //     const updateOngoingTrue = await User.findOne({
+                    //         discordId: currentUser,
+                    //     }).updateOne({
+                    //         reminderOngoing: true,
+                    //     });
+                    // }, 1000);
+
+                    const updateOngoingTrue = await User.findOne({
+                        discordId: currentUser,
+                    }).updateOne({
+                        reminderOngoing: true,
+                    });
+
+
                     let errorCheck = false;
                     // timer function here
 
@@ -157,15 +166,15 @@ module.exports = {
                         // console.log("im in setInterval");
                         // let flag = checkStop(currentUser);
                         // console.log("flag: ", flag);
-                        flagInterval = await checkStop(currentUser);
-                        console.log("flagInterval: ", flagInterval);
+                        //flagInterval = await checkStop(currentUser);
+                        //console.log("flagInterval: ", flagInterval);
         
-                        if (flagInterval === true) {
-                            clearInterval(timerInterval);
-                            clearTimeout(timeoutReminder);
+                        // if (flagInterval === true) {
+                        //     clearInterval(timerInterval);
+                        //     clearTimeout(timeoutReminder);
                             
-                        }
-                        if (!errorCheck && flagInterval != true) {
+                        // }
+                        if (!errorCheck) {
                             userFetch
                                 .send({
                                     embeds: [
@@ -184,46 +193,39 @@ module.exports = {
                                     // console.log("error here");
                                     errorCheck = true;
                                 });
-                            // console.log(
-                            //     "Sent message to ",
-                            //     interaction.user.username
-                            // );
-                        } else {
-                            const updateStop = await User.findOne({
-                                discordId: interaction.user.id,
-                            }).updateOne({
-                                reminderStop: false,
-                            });
-                            clearInterval(timerInterval);
+                            console.log(
+                                "Sent message to ",
+                                interaction.user.username
+                            );
                         }
                     }, interval * 1000);
 
                     // console.log(errorCheck);
 
                     timeoutReminder = setTimeout(async () => {
-                        flagInterval = await checkStop(currentUser);
-                        console.log("flagInterval: ", flagInterval);
+                        // flagInterval = await checkStop(currentUser);
+                        // console.log("flagInterval: ", flagInterval);
 
-                        if (flagInterval === true) {
+                        // if (flagInterval === true) {
+                        //     clearInterval(timerInterval);
+                        //     clearTimeout(timeoutReminder);
+                        // }
+                        if (!errorCheck) {
                             clearInterval(timerInterval);
                             clearTimeout(timeoutReminder);
-                        }
-                        if (!errorCheck) {
-                            clearTimeout();
-                            clearInterval(timerInterval);
                             const updateOngoingFalse = await User.findOne({
                                 discordId: interaction.user.id,
                             }).updateOne({
                                 reminderOngoing: false,
                             });
-                            console.log("Stop timer reminder!");
+                            console.log("Stop timer reminder for ", interaction.user.username);
                         }
-                    }, duration * 1000);
+                    }, duration * 1010);
                     // console.log("im here");
                 } else {
                     await interaction.reply({
                         content:
-                            "Duration must be greater than 60s and Interval must be greater than or equal to 15s\nDuration must be greater than Interval!",
+                            "Duration must be greater than Interval!\nInterval must be greater than 0s",
                         ephemeral: true,
                     });
                     return;

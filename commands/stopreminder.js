@@ -15,24 +15,29 @@ module.exports = {
             return;
         }
         console.log("force stop");
-        const updateStop = await User.findOne({
+        // const updateStop = await User.findOne({
+        //     discordId: interaction.user.id,
+        // }).updateOne({
+        //     reminderStop: true,
+        // });
+        const updateOngoingFalse = await User.findOne({
             discordId: interaction.user.id,
         }).updateOne({
-            reminderStop: true,
+            reminderOngoing: false,
         });
 
-        setTimeout(async () => {
-			// const updateStopFalse = await User.findOne({
-			// 	discordId: interaction.user.id,
-			// }).updateOne({
-			// 	reminderStop: false,
-			// });
-            const updateOngoingFalse = await User.findOne({
-                discordId: interaction.user.id,
-            }).updateOne({
-                reminderOngoing: false,
-            });
-        }, 2000);
+        // setTimeout(async () => {
+		// 	// const updateStopFalse = await User.findOne({
+		// 	// 	discordId: interaction.user.id,
+		// 	// }).updateOne({
+		// 	// 	reminderStop: false,
+		// 	// });
+        //     const updateOngoingFalse = await User.findOne({
+        //         discordId: interaction.user.id,
+        //     }).updateOne({
+        //         reminderOngoing: false,
+        //     });
+        // }, 2000);
         await interaction.reply("Reminder stopped!");
     },
 };
