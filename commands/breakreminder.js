@@ -164,16 +164,16 @@ module.exports = {
 
                     timerInterval = setInterval(async () => {
                         // console.log("im in setInterval");
-                        // let flag = checkStop(currentUser);
+                        //let flag = checkStop(currentUser);
                         // console.log("flag: ", flag);
-                        //flagInterval = await checkStop(currentUser);
+                        flagInterval = await checkStop(currentUser);
                         //console.log("flagInterval: ", flagInterval);
         
-                        // if (flagInterval === true) {
-                        //     clearInterval(timerInterval);
-                        //     clearTimeout(timeoutReminder);
+                        if (flagInterval === true) {
+                            clearInterval(timerInterval);
+                            clearTimeout(timeoutReminder);
                             
-                        // }
+                        }
                         if (!errorCheck) {
                             userFetch
                                 .send({
