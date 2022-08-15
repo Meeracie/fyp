@@ -34,7 +34,7 @@ async function checkOngoing(currentUser) {
         }).select("-_id reminderOngoing");
         // console.log("userdbOngoing: " + userdbOngoing);
         let userDbOngoingValue = userdbOngoing.reminderOngoing;
-        // console.log("in checkOngoing: ", userDbOngoingValue);
+        console.log("in checkOngoing: ", userDbOngoingValue);
         // if (userDbOngoingValue === true) {
         //     console.log("ONGOING REMINDER!");
         // }
@@ -79,7 +79,8 @@ module.exports = {
             let flag = await checkOngoing(currentUser);
 
             // console.log("flag: " + flag);
-            // console.log("checkOngoing:" + (await checkOngoing(currentUser)));
+    
+            // Prevent duplication of breakreminder when there is already reminder ongoing.
             if (flag === true) {
                 // console.log(
                 //     "=====================================\nONGOING!\n================================"
@@ -166,7 +167,7 @@ module.exports = {
                         // console.log("im in setInterval");
                         //let flag = checkStop(currentUser);
                         // console.log("flag: ", flag);
-                        flagInterval = await checkStop(currentUser);
+                        flagInterval = await checkOngoing(currentUser);
                         //console.log("flagInterval: ", flagInterval);
         
                         if (flagInterval === true) {
@@ -203,13 +204,13 @@ module.exports = {
                     // console.log(errorCheck);
 
                     timeoutReminder = setTimeout(async () => {
-                        // flagInterval = await checkStop(currentUser);
+                        flagInterval = await checkOngoing(currentUser);
                         // console.log("flagInterval: ", flagInterval);
 
-                        // if (flagInterval === true) {
-                        //     clearInterval(timerInterval);
-                        //     clearTimeout(timeoutReminder);
-                        // }
+                        if (flagInterval === true) {
+                            clearInterval(timerInterval);
+                            clearTimeout(timeoutReminder);
+                        }
                         if (!errorCheck) {
                             clearInterval(timerInterval);
                             clearTimeout(timeoutReminder);
