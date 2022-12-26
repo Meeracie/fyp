@@ -17,6 +17,7 @@ Take5 Bot is a Discord bot that reminds users to take a break every x minutes by
 - Water Intake
 - User Info
 
+_**Take5 bot does not undergo frequent development updates.**_
 ## Installation
 
 _To be updated_
@@ -25,7 +26,7 @@ _To be updated_
 
 **Client:** Javascript
 
-**Server:** Node.js, MongoDB (Mongoose), Heroku (Deployment)
+**Server:** Node.js, MongoDB (Mongoose), Heroku (Deployment), Discord.js V13
 
 
 ## Developers
